@@ -130,7 +130,7 @@ export default function PublicDashboard() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 border-b border-white/5 bg-black/30 backdrop-blur-md">
+      <header className="relative z-50 border-b border-white/5 bg-black/30 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate("/dashboard")} className="p-2 rounded-lg hover:bg-white/5 transition-colors mr-1">

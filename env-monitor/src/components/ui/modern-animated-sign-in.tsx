@@ -596,7 +596,6 @@ const AuthTabs = memo(function AuthTabs({
           fieldPerRow={1}
           onSubmit={handleSubmit}
           goTo={goTo}
-          googleLogin='Login with Google'
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AuthTabs } from '@/components/ui/modern-animated-sign-in';
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { Activity, Eye, Users, Shield, ArrowLeft, Home } from "lucide-react";
@@ -15,9 +15,12 @@ type FormData = {
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
   const [authError, setAuthError] = useState<string | undefined>(undefined);
-  const [selectedRole, setSelectedRole] = useState<'Resident' | 'Sarpanch' | 'Inspector'>('Resident');
+  const [selectedRole, setSelectedRole] = useState<'Resident' | 'Sarpanch' | 'Inspector'>(
+    location.state?.requiredRole || 'Resident'
+  );
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',

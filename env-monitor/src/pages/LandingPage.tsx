@@ -276,9 +276,8 @@ export default function LandingPage() {
                 <h4 className="text-gray-200 font-semibold text-sm uppercase tracking-wider">Company</h4>
                 <nav className="flex flex-col space-y-3">
                   <Link to="/" className="text-sm text-gray-500 hover:text-white transition-colors">Home</Link>
-                  <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">About Us</a>
+                  <a href="#public-dashboard" className="text-sm text-gray-500 hover:text-white transition-colors">Air Quality Index</a>
                   <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Contact Us</a>
-                  <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Privacy Policy</a>
                 </nav>
               </div>
 
@@ -299,13 +298,9 @@ export default function LandingPage() {
           </div>
 
           <div className="pt-8 border-t border-zinc-800 text-center flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-zinc-600 mx-auto">
               © 2026 EcoSentinel Inc. All rights reserved.
             </p>
-            <div className="flex space-x-6">
-              <a href="#" className="text-zinc-600 hover:text-emerald-500 transition-colors">Terms of Service</a>
-              <a href="#" className="text-zinc-600 hover:text-emerald-500 transition-colors">Cookie Policy</a>
-            </div>
           </div>
         </div>
       </footer>

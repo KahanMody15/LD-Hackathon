@@ -10,6 +10,7 @@ import { ChatAssistant } from "@/components/dashboard/ChatAssistant";
 import { FormAModal } from "@/components/dashboard/FormAModal";
 import { BroadcastModal } from "@/components/dashboard/BroadcastModal";
 import { useRealTimeData } from "@/hooks/useRealTimeData";
+import { getCurrentSession, clearSession } from "@/lib/store";
 import type { Role, Event } from "@/types";
 
 const DASHBOARD_CARDS = [
@@ -78,6 +79,17 @@ export default function Dashboard() {
 
   const { sensors, factories, activeEvents } = useRealTimeData();
 
+  const handleDashboardClick = (e: React.MouseEvent, card: typeof DASHBOARD_CARDS[0]) => {
+    e.stopPropagation();
+    const session = getCurrentSession();
+    if (!session || session.role !== card.role) {
+      clearSession();
+      navigate('/auth', { state: { requiredRole: card.role } });
+    } else {
+      navigate(card.route);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#030914] flex flex-col overflow-hidden relative">
       {/* Ambient background glows */}
@@ -91,9 +103,8 @@ export default function Dashboard() {
         role={role}
         setRole={(r) => {
           setRole(r);
-          // Navigate to the role-specific dashboard on selection
           const card = DASHBOARD_CARDS.find(c => c.role === r);
-          if (card) navigate(card.route);
+          if (card) handleDashboardClick(new MouseEvent('click') as any as React.MouseEvent, card);
         }}
         onBroadcastClick={() => setShowBroadcast(true)}
       />
@@ -122,7 +133,7 @@ export default function Dashboard() {
               <div
                 key={card.role}
                 className={`relative group rounded-2xl border ${card.border} bg-gradient-to-br ${card.gradient} p-6 flex flex-col gap-4 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 ${card.glow} cursor-pointer backdrop-blur-sm`}
-                onClick={() => navigate(card.route)}
+                onClick={(e) => handleDashboardClick(e, card)}
               >
                 {/* Tag */}
                 <div className="flex items-center justify-between">
@@ -156,10 +167,9 @@ export default function Dashboard() {
                   ))}
                 </div>
 
-                {/* Button */}
                 <button
                   className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all ${card.btnColor} group-hover:gap-3`}
-                  onClick={(e) => { e.stopPropagation(); navigate(card.route); }}
+                  onClick={(e) => handleDashboardClick(e, card)}
                 >
                   Enter Dashboard
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
