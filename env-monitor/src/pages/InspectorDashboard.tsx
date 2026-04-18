@@ -400,13 +400,13 @@ export default function InspectorDashboard() {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">Reports & Compliance Forms</h2>
               <div className="flex gap-2">
-                <button className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-800 border border-white/10 rounded-lg text-slate-400 hover:text-white transition-colors">
-                  <Filter className="w-3 h-3" />
-                  Filter
-                </button>
-                <button className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                <button onClick={() => {
+                  const doc = new jsPDF();
+                  doc.text("All Reports Data", 14, 22);
+                  doc.save("all_reports.pdf");
+                }} className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
                   <Download className="w-3 h-3" />
-                  Export All
+                  Download Report
                 </button>
               </div>
             </div>
@@ -428,8 +428,12 @@ export default function InspectorDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`text-xs px-2 py-1 rounded-lg border font-medium ${r.status === 'Ready' || r.status === 'Published' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20'}`}>{r.status}</span>
-                  <button className="text-xs text-blue-400 flex items-center gap-1 hover:underline">
-                    <Download className="w-3 h-3" /> Download
+                  <button onClick={() => {
+                    const doc = new jsPDF();
+                    doc.text("Report: " + r.name, 14, 22);
+                    doc.save(r.name.replace(/\s+/g, '_') + '.pdf');
+                  }} className="text-xs text-blue-400 flex items-center gap-1 hover:underline">
+                    <Download className="w-3 h-3" /> Download Report
                   </button>
                 </div>
               </div>

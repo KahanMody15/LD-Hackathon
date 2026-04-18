@@ -1,5 +1,6 @@
-import { Activity, Bell, RadioTower } from "lucide-react";
+import { Activity, RadioTower } from "lucide-react";
 import type { Role } from "@/types";
+import { HeaderActions } from "./HeaderActions";
 
 interface TopNavProps {
   role: Role;
@@ -45,14 +46,7 @@ export function TopNav({ role, setRole, onBroadcastClick }: TopNavProps) {
           </div>
         </div>
 
-        <button className="relative w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-2 w-1.5 h-1.5 bg-primary-500 rounded-full"></span>
-        </button>
-        
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-600 to-primary-400 flex items-center justify-center text-white text-sm font-bold">
-          {role.charAt(0)}
-        </div>
+        <HeaderActions />
       </div>
     </header>
   );
