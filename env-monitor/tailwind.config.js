@@ -13,7 +13,7 @@ export default {
         skeleton: "var(--skeleton)",
         border: "var(--btn-border)",
         input: "var(--input)",
-        
+
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',

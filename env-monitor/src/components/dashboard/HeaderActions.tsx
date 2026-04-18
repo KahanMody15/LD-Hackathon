@@ -19,20 +19,20 @@ export function HeaderActions() {
   return (
     <div className="flex items-center gap-4">
       {/* Home Button */}
-      <button 
+      <button
         onClick={() => navigate('/')}
         className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
         title="Home"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-300">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       </button>
 
       {/* Notifications */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => {
             setShowNotifications(!showNotifications);
             setShowProfile(false);
@@ -71,7 +71,7 @@ export function HeaderActions() {
 
       {/* Profile */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => {
             setShowProfile(!showProfile);
             setShowNotifications(false);
@@ -92,7 +92,7 @@ export function HeaderActions() {
                 </div>
               )}
             </div>
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full text-left px-4 py-3 text-red-400 text-sm hover:bg-white/5 flex items-center gap-2 transition-colors font-medium"
             >

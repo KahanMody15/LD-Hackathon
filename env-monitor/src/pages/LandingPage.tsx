@@ -42,7 +42,7 @@ export default function LandingPage() {
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-900/20 via-dark-base to-dark-base pointer-events-none"></div>
       <RippleBackground />
-      
+
       {/* Nav */}
       <nav className="relative z-50 flex items-center justify-between p-6 md:px-12 border-b border-white/5 bg-dark-base/50 backdrop-blur-md">
         <div className="flex items-center gap-3">
@@ -94,7 +94,7 @@ export default function LandingPage() {
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
               </div>
-              
+
               <button
                 onClick={() => {
                   const el = document.getElementById("sign-in-section");
@@ -129,7 +129,7 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-                  <MapPin className="text-emerald-500 w-8 h-8" /> 
+                  <MapPin className="text-emerald-500 w-8 h-8" />
                   Public AQI Dashboard: {selectedRegion}
                 </h2>
                 <p className="text-emerald-200/60 mt-2">Live environmental compliance data for citizens.</p>
@@ -160,11 +160,11 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="mt-8 bg-zinc-900/40 border border-white/5 rounded-2xl p-6 hidden md:block">
-               <div className="h-[400px] w-full rounded-xl flex items-center justify-center border border-zinc-700/50 relative overflow-hidden">
-                 <MapPanel sensors={sensors} factories={factories} activeEvents={activeEvents} />
-               </div>
+              <div className="h-[400px] w-full rounded-xl flex items-center justify-center border border-zinc-700/50 relative overflow-hidden">
+                <MapPanel sensors={sensors} factories={factories} activeEvents={activeEvents} />
+              </div>
             </div>
           </div>
         </section>
@@ -173,7 +173,7 @@ export default function LandingPage() {
       {/* Air Quality Index - Modern SaaS Section */}
       <section className="relative z-10 py-24 px-6 md:px-12 bg-black/40 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
-          
+
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Air Quality Index Features</h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
@@ -182,7 +182,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 cursor-crosshair">
-            
+
             {/* Feature 1 */}
             <GlowCard glowColor="blue" size="md" customSize className="bg-zinc-900/60 w-full h-full p-8 border-transparent">
               <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5">
@@ -254,8 +254,8 @@ export default function LandingPage() {
           {/* Sign In Button Moved Below Features */}
           <div id="sign-in-section" className="mt-20 flex flex-col items-center justify-center text-center scroll-mt-32">
             <h3 className="text-2xl font-bold text-white mb-6">Ready to manage your fleet?</h3>
-            <Link 
-              to="/auth" 
+            <Link
+              to="/auth"
               className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white bg-indigo-600 rounded-xl overflow-hidden shadow-2xl transition-transform hover:scale-105 active:scale-95"
             >
               <div className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></div>
@@ -269,7 +269,7 @@ export default function LandingPage() {
 
       {/* Need Help Button (Above Footer, Left Aligned) */}
       <div className="relative z-10 bg-black px-6 md:px-12 pt-16 pb-2">
-        <button 
+        <button
           onClick={() => setShowHelp(true)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 text-blue-400 font-medium rounded-lg transition-colors text-sm"
         >
@@ -287,7 +287,7 @@ export default function LandingPage() {
       <footer className="relative z-10 bg-black pt-8 pb-8 border-t border-zinc-800">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-            
+
             {/* Left Column - Brand */}
             <div className="space-y-4">
               <div className="flex items-center gap-3 mb-4">
@@ -303,7 +303,7 @@ export default function LandingPage() {
 
             {/* Right Column - Navigation & Contact */}
             <div className="grid grid-cols-2 gap-8 md:justify-items-end">
-              
+
               {/* Links */}
               <div className="space-y-4">
                 <h4 className="text-gray-200 font-semibold text-sm uppercase tracking-wider">Company</h4>

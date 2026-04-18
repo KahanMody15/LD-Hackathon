@@ -66,7 +66,7 @@ const DASHBOARD_CARDS = [
     iconColor: "text-blue-400",
     tag: "GSPCB Official",
     tagColor: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    btnColor: "bg-blue-500 hover:bg-blue-400 text-white",
+    btnColor: "bg-blue-500 hover:bg-blue-400 text-foreground",
   },
 ];
 
@@ -91,7 +91,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030914] flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-background text-foreground flex flex-col overflow-hidden relative">
       {/* Ambient background glows */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[160px]" />
@@ -114,14 +114,14 @@ export default function Dashboard() {
       <div className="flex-1 overflow-y-auto relative z-10">
         {/* Hero */}
         <div className="text-center pt-12 pb-8 px-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/60 border border-white/10 text-xs text-slate-400 mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/60 border border-border-light text-xs text-secondary mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             {sensors.filter(s => s.status === 'Active').length} sensors live · {activeEvents.length} active events
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-emerald-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent mb-4 leading-tight">
             Choose Your Dashboard
           </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-secondary text-lg max-w-2xl mx-auto">
             EcoSentinel provides three specialized dashboards — each tailored to your role in the environmental monitoring ecosystem.
           </p>
         </div>
@@ -149,18 +149,18 @@ export default function Dashboard() {
                     <card.icon className={`w-6 h-6 ${card.iconColor}`} />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-white leading-tight">{card.title}</h2>
+                    <h2 className="text-lg font-bold text-foreground leading-tight">{card.title}</h2>
                     <p className={`text-xs font-medium ${card.iconColor} mt-0.5`}>{card.subtitle}</p>
                   </div>
                 </div>
 
                 {/* Description */}
-                <p className="text-slate-400 text-sm leading-relaxed">{card.description}</p>
+                <p className="text-secondary text-sm leading-relaxed">{card.description}</p>
 
                 {/* Features */}
                 <div className="space-y-1.5 flex-1">
                   {card.features.map((f) => (
-                    <div key={f} className="flex items-center gap-2 text-xs text-slate-400">
+                    <div key={f} className="flex items-center gap-2 text-xs text-secondary">
                       <div className={`w-1 h-1 rounded-full ${card.iconColor}`} />
                       {f}
                     </div>
@@ -182,7 +182,7 @@ export default function Dashboard() {
           <div className="mt-10">
             <button
               onClick={() => setShowMap(!showMap)}
-              className="flex items-center gap-2 mx-auto text-sm text-slate-400 hover:text-white transition-colors border border-white/10 px-4 py-2 rounded-lg hover:border-white/20"
+              className="flex items-center gap-2 mx-auto text-sm text-secondary hover:text-foreground transition-colors border border-border-light px-4 py-2 rounded-lg hover:border-white/20"
             >
               <MapPin className="w-4 h-4" />
               {showMap ? "Hide" : "Show"} Live Sensor Map
@@ -191,13 +191,13 @@ export default function Dashboard() {
 
             {showMap && (
               <div className="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-6 h-[500px]">
-                <div className="lg:col-span-3 glass-panel rounded-xl flex border-white/5 relative">
+                <div className="lg:col-span-3 glass-panel rounded-xl flex border-border-light relative">
                   <MapPanel sensors={sensors} factories={factories} activeEvents={activeEvents} />
                   {role !== 'Resident' && activeEvents.length > 0 && activeEvents[0].severity === 'Critical' && (
                     <div className="absolute bottom-6 right-6">
                       <button
                         onClick={() => setFormModalEvent(activeEvents[0])}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-red-600 animate-bounce text-sm"
+                        className="bg-red-500 text-foreground px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-red-600 animate-bounce text-sm"
                       >
                         Generate GSPCB Form-A
                       </button>

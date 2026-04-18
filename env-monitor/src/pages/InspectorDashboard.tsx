@@ -58,28 +58,28 @@ export default function InspectorDashboard() {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
     doc.text(`Quality Report: ${factory.name}`, 14, 22);
-    
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
     doc.text(`Date of Report: ${new Date().toLocaleDateString()}`, 14, 32);
     doc.text(`Factory Type: ${factory.type}`, 14, 40);
     doc.text(`Consent Info: ${factory.consent} (Exp: ${factory.expiry})`, 14, 48);
-    
+
     doc.setFont("helvetica", "bold");
     doc.text(`Pollutant Readings:`, 14, 60);
     doc.setFont("helvetica", "normal");
     doc.text(`PM2.5 Level: ${factory.pm25} µg/m³`, 14, 68);
     doc.text(`SO2 Level: ${factory.so2} µg/m³`, 14, 76);
     doc.text(`NOx Level: ${factory.nox} µg/m³`, 14, 84);
-    
+
     doc.setFont("helvetica", "bold");
     doc.text(`COMPLIANCE STATUS: ${factory.compliance.toUpperCase()}`, 14, 100);
-    
-    if(factory.compliance === "Violation") {
-        doc.setTextColor(255, 0, 0);
-        doc.text(`WARNING: This facility requires immediate action.`, 14, 110);
+
+    if (factory.compliance === "Violation") {
+      doc.setTextColor(255, 0, 0);
+      doc.text(`WARNING: This facility requires immediate action.`, 14, 110);
     }
-    
+
     doc.save(`${factory.name.replace(/\s+/g, '_')}_AQI_Report.pdf`);
   };
 
@@ -103,7 +103,7 @@ export default function InspectorDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030914] text-white font-sans">
+    <div className="min-h-screen bg-background text-foreground text-foreground font-sans">
       {/* Background glows */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/3 w-96 h-96 bg-blue-600/8 rounded-full blur-[140px]" />
@@ -112,11 +112,11 @@ export default function InspectorDashboard() {
       </div>
 
       {/* Header */}
-      <header className="relative z-20 border-b border-white/5 bg-black/40 backdrop-blur-md sticky top-0">
+      <header className="relative z-20 border-b border-border-light bg-background backdrop-blur-md sticky top-0">
         <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate("/dashboard")} className="p-2 rounded-lg hover:bg-white/5 transition-colors mr-1">
-              <ArrowLeft className="w-4 h-4 text-slate-400" />
+              <ArrowLeft className="w-4 h-4 text-secondary" />
             </button>
             <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
               <Shield className="w-5 h-5 text-blue-400" />
@@ -146,7 +146,7 @@ export default function InspectorDashboard() {
       </header>
 
       {/* Tabs */}
-      <div className="relative z-10 border-b border-white/5 bg-black/20 backdrop-blur-sm">
+      <div className="relative z-10 border-b border-border-light bg-background backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex gap-1">
             {([
@@ -158,7 +158,7 @@ export default function InspectorDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3.5 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id ? "border-blue-400 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}
+                className={`flex items-center gap-2 px-4 py-3.5 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id ? "border-blue-400 text-blue-400" : "border-transparent text-secondary hover:text-slate-300"}`}
               >
                 <tab.icon className="w-3.5 h-3.5" />
                 {tab.label}
@@ -175,10 +175,10 @@ export default function InspectorDashboard() {
             { label: "Zone Avg AQI", value: avgAQI, sub: avgAQI > 150 ? "⚠ Unhealthy" : "Under Control", valueClass: avgAQI > 150 ? "text-red-400" : "text-blue-400" },
             { label: "Active Sensors", value: sensors.filter(s => s.status === 'Active').length, sub: `${sensors.filter(s => s.status !== 'Active').length} issues`, valueClass: "text-emerald-400" },
             { label: "Violations", value: violatingFactories, sub: "Require action now", valueClass: "text-red-400" },
-            { label: "Critical Events", value: criticalEvents.length, sub: "In monitored zone", valueClass: criticalEvents.length > 0 ? "text-red-400 animate-pulse" : "text-slate-400" },
+            { label: "Critical Events", value: criticalEvents.length, sub: "In monitored zone", valueClass: criticalEvents.length > 0 ? "text-red-400 animate-pulse" : "text-secondary" },
           ].map((s) => (
-            <div key={s.label} className={`bg-slate-900/50 border rounded-xl p-4 ${s.label === 'Violations' && violatingFactories > 0 ? 'border-red-500/20' : 'border-white/5'}`}>
-              <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">{s.label}</div>
+            <div key={s.label} className={`bg-background border border-border-light shadow-sm border rounded-xl p-4 ${s.label === 'Violations' && violatingFactories > 0 ? 'border-red-500/20' : 'border-border-light'}`}>
+              <div className="text-xs text-secondary uppercase tracking-wider mb-1">{s.label}</div>
               <div className={`text-3xl font-bold ${s.valueClass}`}>{s.value}</div>
               <div className="text-xs text-slate-600 mt-0.5">{s.sub}</div>
             </div>
@@ -188,8 +188,8 @@ export default function InspectorDashboard() {
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Compliance Trend */}
-            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5">
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4">Zone Compliance Score Trend (%)</h3>
+            <div className="bg-background border border-border-light shadow-sm border border-border-light rounded-2xl p-5">
+              <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">Zone Compliance Score Trend (%)</h3>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={INSPECTION_HISTORY}>
@@ -204,8 +204,8 @@ export default function InspectorDashboard() {
             </div>
 
             {/* Factories Quick View */}
-            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5">
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4">Factory Compliance Status</h3>
+            <div className="bg-background border border-border-light shadow-sm border border-border-light rounded-2xl p-5">
+              <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">Factory Compliance Status</h3>
               <div className="space-y-3">
                 {FACTORIES_EXTENDED.map((f: any) => {
                   const { badge, icon: Icon } = ComplianceColor(f.compliance);
@@ -213,11 +213,11 @@ export default function InspectorDashboard() {
                     <button
                       key={f.id}
                       onClick={() => { setSelectedFactory(f); setActiveTab("factories"); }}
-                      className="w-full flex items-center justify-between bg-slate-800/30 hover:bg-slate-800/60 rounded-xl p-3 border border-white/5 transition-all text-left"
+                      className="w-full flex items-center justify-between bg-slate-800/30 hover:bg-slate-800/60 rounded-xl p-3 border border-border-light transition-all text-left"
                     >
                       <div>
-                        <div className="text-sm font-semibold text-slate-200">{f.name}</div>
-                        <div className="text-xs text-slate-500">{f.type} · Consent: {f.consent}</div>
+                        <div className="text-sm font-semibold text-foreground">{f.name}</div>
+                        <div className="text-xs text-secondary">{f.type} · Consent: {f.consent}</div>
                       </div>
                       <span className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg border ${badge}`}>
                         <Icon className="w-3 h-3" />
@@ -242,16 +242,16 @@ export default function InspectorDashboard() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {activeEvents.map(evt => (
-                    <div key={evt.id} className="bg-black/30 p-4 rounded-xl border border-red-500/15">
+                    <div key={evt.id} className="bg-background p-4 rounded-xl border border-red-500/15">
                       <div className="flex items-start justify-between mb-2">
-                        <span className="font-semibold text-white text-sm">{evt.type}</span>
+                        <span className="font-semibold text-foreground text-sm">{evt.type}</span>
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${evt.severity === 'Critical' ? 'bg-red-500/20 text-red-400' : evt.severity === 'High' ? 'bg-orange-500/20 text-orange-400' : 'bg-yellow-500/20 text-yellow-400'}`}>{evt.severity}</span>
                       </div>
-                      <p className="text-xs text-slate-400 mb-2">{evt.description}</p>
+                      <p className="text-xs text-secondary mb-2">{evt.description}</p>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-slate-600">Confidence: {(evt.confidenceScore * 100).toFixed(0)}%</span>
                         {evt.severity === 'Critical' && (
-                          <button onClick={() => setFormModalEvent(evt)} className="text-[10px] bg-red-500 text-white px-2 py-1 rounded font-bold hover:bg-red-600">
+                          <button onClick={() => setFormModalEvent(evt)} className="text-[10px] bg-red-500 text-foreground px-2 py-1 rounded font-bold hover:bg-red-600">
                             File Form-A
                           </button>
                         )}
@@ -267,144 +267,144 @@ export default function InspectorDashboard() {
         {activeTab === "factories" && (
           <div className="space-y-4">
             <div className="flex justify-between items-end mb-2">
-              <h2 className="text-lg font-bold text-white">Registered Factories</h2>
-              <button onClick={() => setShowAddFactory(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-colors">
+              <h2 className="text-lg font-bold text-foreground">Registered Factories</h2>
+              <button onClick={() => setShowAddFactory(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-foreground text-xs font-semibold rounded-lg transition-colors">
                 + Register Factory
               </button>
             </div>
-            
+
             {showAddFactory && (
-              <div className="bg-slate-900/50 border border-white/10 rounded-xl p-4 mb-4">
-                <h3 className="text-sm font-bold text-white mb-3">New Factory Audit Registry</h3>
+              <div className="bg-background border border-border-light shadow-sm border border-border-light rounded-xl p-4 mb-4">
+                <h3 className="text-sm font-bold text-foreground mb-3">New Factory Audit Registry</h3>
                 <form onSubmit={handleAddFactory} className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                  <input type="text" placeholder="Factory Name" value={newFactoryData.name} onChange={e => setNewFactoryData({...newFactoryData, name: e.target.value})} className="col-span-2 md:col-span-2 bg-slate-800 text-white text-xs p-2 rounded border border-white/5" required />
-                  <select value={newFactoryData.type} onChange={e => setNewFactoryData({...newFactoryData, type: e.target.value})} className="bg-slate-800 text-white text-xs p-2 rounded border border-white/5" required>
+                  <input type="text" placeholder="Factory Name" value={newFactoryData.name} onChange={e => setNewFactoryData({ ...newFactoryData, name: e.target.value })} className="col-span-2 md:col-span-2 bg-slate-800 text-foreground text-xs p-2 rounded border border-border-light" required />
+                  <select value={newFactoryData.type} onChange={e => setNewFactoryData({ ...newFactoryData, type: e.target.value })} className="bg-slate-800 text-foreground text-xs p-2 rounded border border-border-light" required>
                     <option>Chemical</option> <option>Pharma</option> <option>Pulp & Paper</option>
                   </select>
-                  <input type="number" placeholder="PM2.5" value={newFactoryData.pm25} onChange={e => setNewFactoryData({...newFactoryData, pm25: +e.target.value})} className="bg-slate-800 text-white text-xs p-2 rounded border border-white/5" required />
+                  <input type="number" placeholder="PM2.5" value={newFactoryData.pm25} onChange={e => setNewFactoryData({ ...newFactoryData, pm25: +e.target.value })} className="bg-slate-800 text-foreground text-xs p-2 rounded border border-border-light" required />
                   <div className="flex gap-2 col-span-2 md:col-span-1">
                     <button type="submit" className="flex-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-xs hover:bg-emerald-500/30">Save</button>
-                    <button type="button" onClick={() => setShowAddFactory(false)} className="flex-1 bg-slate-800 text-slate-400 border border-white/10 rounded text-xs hover:text-white">Cancel</button>
+                    <button type="button" onClick={() => setShowAddFactory(false)} className="flex-1 bg-slate-800 text-secondary border border-border-light rounded text-xs hover:text-foreground">Cancel</button>
                   </div>
                 </form>
               </div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Factory List */}
-            <div className="lg:col-span-1 space-y-3">
-              {FACTORIES_EXTENDED.map((f: any) => {
-                const { badge, icon: Icon } = ComplianceColor(f.compliance);
-                return (
-                  <button
-                    key={f.id}
-                    onClick={() => setSelectedFactory(selectedFactory?.id === f.id ? null : f)}
-                    className={`w-full bg-slate-900/50 rounded-2xl p-4 border text-left transition-all ${selectedFactory?.id === f.id ? 'border-blue-500/40 bg-blue-500/5' : 'border-white/5 hover:border-white/10'}`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="font-bold text-white">{f.name}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{f.type}</div>
+              {/* Factory List */}
+              <div className="lg:col-span-1 space-y-3">
+                {FACTORIES_EXTENDED.map((f: any) => {
+                  const { badge, icon: Icon } = ComplianceColor(f.compliance);
+                  return (
+                    <button
+                      key={f.id}
+                      onClick={() => setSelectedFactory(selectedFactory?.id === f.id ? null : f)}
+                      className={`w-full bg-background border border-border-light shadow-sm rounded-2xl p-4 border text-left transition-all ${selectedFactory?.id === f.id ? 'border-blue-500/40 bg-blue-500/5' : 'border-border-light hover:border-border-light'}`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="font-bold text-foreground">{f.name}</div>
+                          <div className="text-xs text-secondary mt-0.5">{f.type}</div>
+                        </div>
+                        <span className={`flex items-center gap-1 text-xs font-bold px-1.5 py-0.5 rounded border ${badge}`}>
+                          <Icon className="w-3 h-3" />
+                          {f.compliance}
+                        </span>
                       </div>
-                      <span className={`flex items-center gap-1 text-xs font-bold px-1.5 py-0.5 rounded border ${badge}`}>
-                        <Icon className="w-3 h-3" />
-                        {f.compliance}
+                      <div className="text-xs text-slate-600 mt-2">Consent: {f.consent} · Exp: {f.expiry}</div>
+                      <div className="text-xs text-slate-600">Last Inspection: {f.lastInspection}</div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Factory Detail */}
+              <div className="lg:col-span-2">
+                {selectedFactory ? (
+                  <div className="bg-background border border-border-light shadow-sm border border-border-light rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h2 className="text-xl font-bold text-foreground">{selectedFactory.name}</h2>
+                        <p className="text-xs text-secondary mt-0.5">{selectedFactory.type} · Consent: {selectedFactory.consent} · Expires: {selectedFactory.expiry}</p>
+                      </div>
+                      <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border ${ComplianceColor(selectedFactory.compliance).badge}`}>
+                        {selectedFactory.compliance}
                       </span>
                     </div>
-                    <div className="text-xs text-slate-600 mt-2">Consent: {f.consent} · Exp: {f.expiry}</div>
-                    <div className="text-xs text-slate-600">Last Inspection: {f.lastInspection}</div>
-                  </button>
-                );
-              })}
-            </div>
 
-            {/* Factory Detail */}
-            <div className="lg:col-span-2">
-              {selectedFactory ? (
-                <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-xl font-bold text-white">{selectedFactory.name}</h2>
-                      <p className="text-xs text-slate-500 mt-0.5">{selectedFactory.type} · Consent: {selectedFactory.consent} · Expires: {selectedFactory.expiry}</p>
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      {[
+                        { label: "PM2.5", value: selectedFactory.pm25, unit: "µg/m³", limit: 100 },
+                        { label: "SO₂", value: selectedFactory.so2, unit: "µg/m³", limit: 80 },
+                        { label: "NOx", value: selectedFactory.nox, unit: "µg/m³", limit: 80 },
+                      ].map(m => (
+                        <div key={m.label} className={`rounded-xl p-3 border ${m.value > m.limit ? 'bg-red-950/30 border-red-500/20' : 'bg-slate-800/30 border-border-light'}`}>
+                          <div className="text-xs text-secondary mb-1">{m.label}</div>
+                          <div className={`text-2xl font-bold ${m.value > m.limit ? 'text-red-400' : 'text-emerald-400'}`}>{m.value}</div>
+                          <div className="text-[10px] text-slate-600">{m.unit} · Limit: {m.limit}</div>
+                          {m.value > m.limit && <div className="text-[10px] text-red-400 font-bold mt-0.5">⚠ EXCEEDS LIMIT</div>}
+                        </div>
+                      ))}
                     </div>
-                    <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border ${ComplianceColor(selectedFactory.compliance).badge}`}>
-                      {selectedFactory.compliance}
-                    </span>
-                  </div>
 
-                  <div className="grid grid-cols-3 gap-3 mb-6">
-                    {[
-                      { label: "PM2.5", value: selectedFactory.pm25, unit: "µg/m³", limit: 100 },
-                      { label: "SO₂", value: selectedFactory.so2, unit: "µg/m³", limit: 80 },
-                      { label: "NOx", value: selectedFactory.nox, unit: "µg/m³", limit: 80 },
-                    ].map(m => (
-                      <div key={m.label} className={`rounded-xl p-3 border ${m.value > m.limit ? 'bg-red-950/30 border-red-500/20' : 'bg-slate-800/30 border-white/5'}`}>
-                        <div className="text-xs text-slate-500 mb-1">{m.label}</div>
-                        <div className={`text-2xl font-bold ${m.value > m.limit ? 'text-red-400' : 'text-emerald-400'}`}>{m.value}</div>
-                        <div className="text-[10px] text-slate-600">{m.unit} · Limit: {m.limit}</div>
-                        {m.value > m.limit && <div className="text-[10px] text-red-400 font-bold mt-0.5">⚠ EXCEEDS LIMIT</div>}
-                      </div>
-                    ))}
-                  </div>
+                    <h3 className="text-xs font-bold text-secondary uppercase tracking-wider mb-3">Pollutant Radar Profile</h3>
+                    <div className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart data={getPollutantRadarData(selectedFactory)}>
+                          <PolarGrid stroke="#ffffff10" />
+                          <PolarAngleAxis dataKey="pollutant" tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                          <Radar name="Emissions" dataKey="value" stroke={selectedFactory.compliance === 'Violation' ? '#ef4444' : '#60a5fa'} fill={selectedFactory.compliance === 'Violation' ? '#ef4444' : '#60a5fa'} fillOpacity={0.2} />
+                          <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px', fontSize: '12px' }} />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
 
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Pollutant Radar Profile</h3>
-                  <div className="h-48">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart data={getPollutantRadarData(selectedFactory)}>
-                        <PolarGrid stroke="#ffffff10" />
-                        <PolarAngleAxis dataKey="pollutant" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                        <Radar name="Emissions" dataKey="value" stroke={selectedFactory.compliance === 'Violation' ? '#ef4444' : '#60a5fa'} fill={selectedFactory.compliance === 'Violation' ? '#ef4444' : '#60a5fa'} fillOpacity={0.2} />
-                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px', fontSize: '12px' }} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <div className="flex gap-3 mt-5">
-                    <button onClick={() => generatePDF(selectedFactory)} className="flex-1 flex items-center justify-center gap-2 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-sm font-semibold hover:bg-blue-500/20 transition-colors">
-                      <Download className="w-4 h-4" />
-                      Download Report
-                    </button>
-                    {selectedFactory.compliance === 'Violation' && (
-                      <button
-                        onClick={() => setFormModalEvent(activeEvents[0] || {
-                          id: `f-${selectedFactory.id}`,
-                          type: 'Industrial Spillage',
-                          severity: 'Critical',
-                          location: { lat: 21.6264, lng: 73.0033 },
-                          radiusKm: 2,
-                          timestamp: new Date(),
-                          description: `Norms violation at ${selectedFactory.name}`,
-                          confidenceScore: 0.99,
-                        })}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors"
-                      >
-                        <FileText className="w-4 h-4" />
-                        Issue Form-A
+                    <div className="flex gap-3 mt-5">
+                      <button onClick={() => generatePDF(selectedFactory)} className="flex-1 flex items-center justify-center gap-2 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-sm font-semibold hover:bg-blue-500/20 transition-colors">
+                        <Download className="w-4 h-4" />
+                        Download Report
                       </button>
-                    )}
+                      {selectedFactory.compliance === 'Violation' && (
+                        <button
+                          onClick={() => setFormModalEvent(activeEvents[0] || {
+                            id: `f-${selectedFactory.id}`,
+                            type: 'Industrial Spillage',
+                            severity: 'Critical',
+                            location: { lat: 21.6264, lng: 73.0033 },
+                            radiusKm: 2,
+                            timestamp: new Date(),
+                            description: `Norms violation at ${selectedFactory.name}`,
+                            confidenceScore: 0.99,
+                          })}
+                          className="flex-1 flex items-center justify-center gap-2 py-2 bg-red-500 text-foreground rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors"
+                        >
+                          <FileText className="w-4 h-4" />
+                          Issue Form-A
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="h-80 flex flex-col items-center justify-center text-center bg-slate-900/30 rounded-2xl border border-white/5">
-                  <Shield className="w-12 h-12 text-slate-700 mb-4" />
-                  <p className="text-slate-500">Select a factory from the list to view its audit details</p>
-                </div>
-              )}
+                ) : (
+                  <div className="h-80 flex flex-col items-center justify-center text-center bg-background border border-border-light shadow-sm rounded-2xl border border-border-light">
+                    <Shield className="w-12 h-12 text-slate-700 mb-4" />
+                    <p className="text-secondary">Select a factory from the list to view its audit details</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
           </div>
         )}
 
         {activeTab === "reports" && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Reports & Compliance Forms</h2>
+              <h2 className="text-lg font-bold text-foreground">Reports & Compliance Forms</h2>
               <div className="flex gap-2">
                 <button onClick={() => {
                   const doc = new jsPDF();
                   doc.text("All Reports Data", 14, 22);
                   doc.save("all_reports.pdf");
-                }} className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                }} className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-500 text-foreground rounded-lg font-semibold hover:bg-blue-600 transition-colors">
                   <Download className="w-3 h-3" />
                   Download Report
                 </button>
@@ -416,14 +416,14 @@ export default function InspectorDashboard() {
               { name: "Quarterly Compliance Summary", factory: "All Factories", date: "Q1 2025", status: "Ready", type: "PDF" },
               { name: "Public Health Advisory - Vapi Zone", factory: "Public", date: "Mar 2025", status: "Published", type: "Advisory" },
             ].map((r, i) => (
-              <div key={i} className="bg-slate-900/50 border border-white/5 rounded-2xl p-5 flex items-center justify-between">
+              <div key={i} className="bg-background border border-border-light shadow-sm border border-border-light rounded-2xl p-5 flex items-center justify-between">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
                     <FileText className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>
-                    <div className="font-semibold text-white">{r.name}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{r.factory} · {r.date} · {r.type}</div>
+                    <div className="font-semibold text-foreground">{r.name}</div>
+                    <div className="text-xs text-secondary mt-0.5">{r.factory} · {r.date} · {r.type}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -443,7 +443,7 @@ export default function InspectorDashboard() {
 
         {activeTab === "enforcement" && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-white">Enforcement Actions</h2>
+            <h2 className="text-lg font-bold text-foreground">Enforcement Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               {[
                 { label: "Show Cause Notices Issued", value: inspectorStats.showCauseNotices, icon: AlertTriangle, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", field: 'showCauseNotices' },
@@ -451,29 +451,29 @@ export default function InspectorDashboard() {
                 { label: "Consent Renewals Pending", value: inspectorStats.renewals, icon: Shield, color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", field: 'renewals' },
               ].map(s => (
                 <div key={s.label} className={`rounded-2xl p-5 border relative ${s.bg}`}>
-                   <button onClick={() => { updateInspectorStats({ [s.field]: s.value + 1 }); window.location.reload(); }} className={`absolute top-4 right-4 ${s.color} hover:bg-white/10 rounded border border-white/5 w-6 h-6 flex items-center justify-center font-bold text-lg bg-white/5`} title="Add">+
-                   </button>
+                  <button onClick={() => { updateInspectorStats({ [s.field]: s.value + 1 }); window.location.reload(); }} className={`absolute top-4 right-4 ${s.color} hover:bg-white/10 rounded border border-border-light w-6 h-6 flex items-center justify-center font-bold text-lg bg-white/5`} title="Add">+
+                  </button>
                   <s.icon className={`w-6 h-6 ${s.color} mb-3`} />
                   <div className={`text-3xl font-bold ${s.color}`}>{s.value}</div>
-                  <div className="text-xs text-slate-500 mt-1">{s.label}</div>
+                  <div className="text-xs text-secondary mt-1">{s.label}</div>
                 </div>
               ))}
             </div>
             {FACTORIES_EXTENDED.filter((f: any) => f.compliance !== 'Good').map((f: any) => {
               const { badge, icon: Icon, color } = ComplianceColor(f.compliance);
               return (
-                <div key={f.id} className="bg-slate-900/50 border border-white/5 rounded-2xl p-5">
+                <div key={f.id} className="bg-background border border-border-light shadow-sm border border-border-light rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <Icon className={`w-5 h-5 ${color}`} />
                       <div>
-                        <div className="font-bold text-white">{f.name}</div>
-                        <div className="text-xs text-slate-500">{f.type}</div>
+                        <div className="font-bold text-foreground">{f.name}</div>
+                        <div className="text-xs text-secondary">{f.type}</div>
                       </div>
                     </div>
                     <span className={`text-xs font-bold px-2 py-1 rounded-lg border ${badge}`}>{f.compliance}</span>
                   </div>
-                  <div className="text-sm text-slate-400 mb-3">
+                  <div className="text-sm text-secondary mb-3">
                     {f.compliance === 'Violation' ? `Critical norms violation detected. PM2.5 at ${f.pm25} µg/m³ (300% over limit). Immediate action required.` : `Minor compliance warning. PM2.5 at ${f.pm25} µg/m³ (45% over limit). Notice issued.`}
                   </div>
                   <div className="flex gap-2">
@@ -490,12 +490,12 @@ export default function InspectorDashboard() {
                           description: `Severe pollution at ${f.name}`,
                           confidenceScore: 0.99,
                         })}
-                        className="px-3 py-1.5 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-semibold"
+                        className="px-3 py-1.5 text-xs bg-red-500 text-foreground rounded-lg hover:bg-red-600 transition-colors font-semibold"
                       >
                         File Form-A
                       </button>
                     )}
-                    <button onClick={() => setShowBroadcast(true)} className="px-3 py-1.5 text-xs bg-slate-800 border border-white/10 text-slate-400 rounded-lg hover:bg-slate-700 transition-colors">Broadcast Alert</button>
+                    <button onClick={() => setShowBroadcast(true)} className="px-3 py-1.5 text-xs bg-slate-800 border border-border-light text-secondary rounded-lg hover:bg-slate-700 transition-colors">Broadcast Alert</button>
                   </div>
                 </div>
               );

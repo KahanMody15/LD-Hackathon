@@ -6,6 +6,8 @@ import PublicDashboard from "@/pages/PublicDashboard";
 import SarpanchDashboard from "@/pages/SarpanchDashboard";
 import InspectorDashboard from "@/pages/InspectorDashboard";
 
+import { FloatingChatbot } from "@/components/chat/FloatingChatbot";
+
 function App() {
   return (
     <Router>
@@ -17,6 +19,7 @@ function App() {
         <Route path="/sarpanch-dashboard" element={<SarpanchDashboard />} />
         <Route path="/inspector-dashboard" element={<InspectorDashboard />} />
       </Routes>
+      <FloatingChatbot />
     </Router>
   );
 }
