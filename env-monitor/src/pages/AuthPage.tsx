@@ -3,7 +3,7 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AuthTabs } from '@/components/ui/modern-animated-sign-in';
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { Activity } from "lucide-react";
+import { Activity, Eye, Users, Shield } from "lucide-react";
 
 type FormData = {
   name?: string;
@@ -43,8 +43,14 @@ export default function AuthPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(isLogin ? 'Login submitted' : 'Sign up submitted', formData);
-    // Proceed to dashboard
-    navigate('/dashboard');
+    // Route to the role-specific dashboard
+    const roleRoutes: Record<string, string> = {
+      'Resident': '/public-dashboard',
+      'Sarpanch': '/sarpanch-dashboard',
+      'Inspector': '/inspector-dashboard',
+    };
+    const destination = roleRoutes[formData.role] || '/dashboard';
+    navigate(destination);
   };
 
   const loginFields = {
@@ -190,11 +196,25 @@ export default function AuthPage() {
           <div className="absolute top-0 left-[-100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-45deg] group-hover:left-[100%] transition-all duration-[1500ms] pointer-events-none"></div>
 
           {/* Context Note about the 3 Dashboards */}
-          <div className="mb-6 text-center text-xs text-gray-400 bg-zinc-900/50 p-3 rounded-lg border border-white/5">
-            <span className="text-emerald-400 font-semibold mb-1 block">3 Distinct Ecosystem Dashboards</span>
-            <strong>Public:</strong> Monitor healthy environment metrics.<br/>
-            <strong>Sarpanch:</strong> Manage village-level alerts.<br/>
-            <strong>Inspector:</strong> Generate GSPCB compliances & broadcast.
+          <div className="mb-6">
+            <div className="text-center text-xs text-emerald-400 font-bold uppercase tracking-widest mb-3">3 Specialized Dashboards</div>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl bg-emerald-500/8 border border-emerald-500/20 text-center">
+                <Eye className="w-4 h-4 text-emerald-400" />
+                <span className="text-[10px] font-bold text-emerald-300">Public</span>
+                <span className="text-[9px] text-slate-500 leading-tight">Live AQI by region</span>
+              </div>
+              <div className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl bg-amber-500/8 border border-amber-500/20 text-center">
+                <Users className="w-4 h-4 text-amber-400" />
+                <span className="text-[10px] font-bold text-amber-300">Sarpanch</span>
+                <span className="text-[9px] text-slate-500 leading-tight">Village admin tools</span>
+              </div>
+              <div className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl bg-blue-500/8 border border-blue-500/20 text-center">
+                <Shield className="w-4 h-4 text-blue-400" />
+                <span className="text-[10px] font-bold text-blue-300">Inspector</span>
+                <span className="text-[9px] text-slate-500 leading-tight">GSPCB command center</span>
+              </div>
+            </div>
           </div>
 
           <AuthTabs

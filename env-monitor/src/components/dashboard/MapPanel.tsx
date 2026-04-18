@@ -128,14 +128,16 @@ export function MapPanel({ sensors, factories, activeEvents }: MapPanelProps) {
         ref={canvasRef} 
         width={800} 
         height={500} 
-        className="w-full h-full object-cover relative z-10 mix-blend-screen"
+        className="w-full h-full object-cover relative z-10"
       />
-      <div className="absolute top-4 left-4 z-20 bg-dark-base/90 p-3 rounded-lg backdrop-blur-md border border-white/10 shadow-xl">
-        <h4 className="text-xs font-bold text-slate-200 mb-2 uppercase tracking-wider">Map Legend</h4>
+      <div className="absolute top-4 left-4 z-20 bg-slate-950/95 p-3 rounded-xl backdrop-blur-md border border-white/10 shadow-2xl">
+        <h4 className="text-[10px] font-bold text-slate-200 mb-2.5 uppercase tracking-widest">Map Legend</h4>
         <div className="space-y-2 text-xs text-slate-300">
-          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div> Healthy Sensor</div>
-          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div> Hazard Source</div>
-          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div> Industrial Facility</div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full flex-shrink-0" style={{background:'#2ecc71',boxShadow:'0 0 6px #2ecc71'}}></div> AQI Good (0–100)</div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full flex-shrink-0" style={{background:'#f39c12',boxShadow:'0 0 6px #f39c12'}}></div> AQI Moderate (100–200)</div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full flex-shrink-0" style={{background:'#e74c3c',boxShadow:'0 0 6px #e74c3c'}}></div> AQI Hazardous (200+)</div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{background:'#8e44ad',boxShadow:'0 0 6px #8e44ad'}}></div> Industrial Facility</div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full flex-shrink-0" style={{background:'#7f8c8d'}}></div> Offline Sensor</div>
         </div>
       </div>
     </div>
