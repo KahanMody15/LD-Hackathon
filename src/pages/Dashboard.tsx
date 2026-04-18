@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Users, Shield, Eye, ArrowRight, MapPin, Bell, RadioTower, ChevronDown } from "lucide-react";
+import { Users, Shield, Eye, ArrowRight } from "lucide-react";
 import { TopNav } from "@/components/dashboard/TopNav";
 import { AlertBanner } from "@/components/dashboard/AlertBanner";
-import { MapPanel } from "@/components/dashboard/MapPanel";
-import { MetricsPanel } from "@/components/dashboard/MetricsPanel";
-import { SensorHealthPanel } from "@/components/dashboard/SensorHealthPanel";
 import { ChatAssistant } from "@/components/dashboard/ChatAssistant";
-import { FormAModal } from "@/components/dashboard/FormAModal";
 import { BroadcastModal } from "@/components/dashboard/BroadcastModal";
-import { useRealTimeData } from "@/hooks/useRealTimeData";
+import { FormAModal } from "@/components/dashboard/FormAModal";
+import { useBackend } from "@/backend/BackendContext";
 import type { Role, Event } from "@/types";
 
 const DASHBOARD_CARDS = [
@@ -74,9 +71,9 @@ export default function Dashboard() {
   const [role, setRole] = useState<Role>("Resident");
   const [showBroadcast, setShowBroadcast] = useState(false);
   const [formModalEvent, setFormModalEvent] = useState<Event | null>(null);
-  const [showMap, setShowMap] = useState(false);
-
-  const { sensors, factories, activeEvents } = useRealTimeData();
+  const { nodes, faultReports } = useBackend();
+  const activeCount = nodes.filter(s => s.status === 'Active').length;
+  const faultCount = faultReports.length;
 
   return (
     <div className="min-h-screen bg-[#030914] flex flex-col overflow-hidden relative">
@@ -98,14 +95,14 @@ export default function Dashboard() {
         onBroadcastClick={() => setShowBroadcast(true)}
       />
 
-      <AlertBanner events={activeEvents} />
+      <AlertBanner events={[]} />
 
       <div className="flex-1 overflow-y-auto relative z-10">
         {/* Hero */}
         <div className="text-center pt-12 pb-8 px-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/60 border border-white/10 text-xs text-slate-400 mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            {sensors.filter(s => s.status === 'Active').length} sensors live · {activeEvents.length} active events
+            {activeCount} sensors live · {faultCount} faults detected
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-emerald-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent mb-4 leading-tight">
             Choose Your Dashboard
@@ -166,40 +163,6 @@ export default function Dashboard() {
                 </button>
               </div>
             ))}
-          </div>
-
-          {/* Toggle Map Preview */}
-          <div className="mt-10">
-            <button
-              onClick={() => setShowMap(!showMap)}
-              className="flex items-center gap-2 mx-auto text-sm text-slate-400 hover:text-white transition-colors border border-white/10 px-4 py-2 rounded-lg hover:border-white/20"
-            >
-              <MapPin className="w-4 h-4" />
-              {showMap ? "Hide" : "Show"} Live Sensor Map
-              <ChevronDown className={`w-4 h-4 transition-transform ${showMap ? "rotate-180" : ""}`} />
-            </button>
-
-            {showMap && (
-              <div className="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-6 h-[500px]">
-                <div className="lg:col-span-3 glass-panel rounded-xl flex border-white/5 relative">
-                  <MapPanel sensors={sensors} factories={factories} activeEvents={activeEvents} />
-                  {role !== 'Resident' && activeEvents.length > 0 && activeEvents[0].severity === 'Critical' && (
-                    <div className="absolute bottom-6 right-6">
-                      <button
-                        onClick={() => setFormModalEvent(activeEvents[0])}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-red-600 animate-bounce text-sm"
-                      >
-                        Generate GSPCB Form-A
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="lg:col-span-1 flex flex-col gap-4 h-full overflow-y-auto custom-scrollbar">
-                  <MetricsPanel sensors={sensors} />
-                  <SensorHealthPanel sensors={sensors} />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

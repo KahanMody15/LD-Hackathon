@@ -3,7 +3,8 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AuthTabs } from '@/components/ui/modern-animated-sign-in';
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { Activity } from "lucide-react";
+import { Activity, Eye, Users, Shield, ArrowLeft, Home } from "lucide-react";
+import { saveUser, getStoredUsers, setCurrentSession } from '@/lib/store';
 
 type FormData = {
   name?: string;
@@ -15,6 +16,8 @@ type FormData = {
 export default function AuthPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
+  const [authError, setAuthError] = useState<string | undefined>(undefined);
+  const [selectedRole, setSelectedRole] = useState<'Resident' | 'Sarpanch' | 'Inspector'>('Resident');
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -26,6 +29,7 @@ export default function AuthPage() {
     event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
   ) => {
     event.preventDefault();
+    setAuthError(undefined);
     setIsLogin(!isLogin);
   };
 
@@ -42,14 +46,49 @@ export default function AuthPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(isLogin ? 'Login submitted' : 'Sign up submitted', formData);
-    // Proceed to dashboard
-    navigate('/dashboard');
+    setAuthError(undefined);
+    
+    const users = getStoredUsers();
+
+    if (isLogin) {
+      // Login flow
+      const user = users.find(u => u.email === formData.email && u.password === formData.password && u.role === selectedRole);
+      if (!user) {
+        setAuthError('Invalid credentials or role mismatch.');
+        return;
+      }
+      setCurrentSession(user);
+    } else {
+      // Sign up flow
+      if (users.some(u => u.email === formData.email)) {
+        setAuthError('Account with this email already exists.');
+        return;
+      }
+      const newUser = {
+        id: crypto.randomUUID(),
+        name: formData.name || 'User',
+        email: formData.email,
+        password: formData.password,
+        role: selectedRole as any,
+      };
+      saveUser(newUser);
+      setCurrentSession(newUser);
+    }
+
+    // Route to the role-specific dashboard
+    const roleRoutes: Record<string, string> = {
+      'Resident': '/public-dashboard',
+      'Sarpanch': '/sarpanch-dashboard',
+      'Inspector': '/inspector-dashboard',
+    };
+    const destination = roleRoutes[selectedRole] || '/dashboard';
+    navigate(destination);
   };
 
   const loginFields = {
     header: 'Welcome to EcoSentinel',
     subHeader: 'Select your Role to access the dedicated dashboard view',
+    errorField: authError,
     fields: [
       {
         label: 'Email',
@@ -67,19 +106,6 @@ export default function AuthPage() {
         onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
           handleInputChange(event, 'password'),
       },
-      {
-        label: 'Account Role',
-        required: true,
-        type: 'select' as const,
-        placeholder: 'Select Dashboard Role',
-        options: [
-          { value: 'Resident', label: 'Resident (Public Dashboard)' },
-          { value: 'Sarpanch', label: 'Sarpanch (Village Admin)' },
-          { value: 'Inspector', label: 'Inspector (GSPCB Official)' }
-        ],
-        onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-          handleInputChange(event, 'role'),
-      },
     ],
     submitButton: 'Sign in',
     textVariantButton: "Don't have an account? Sign up",
@@ -88,6 +114,7 @@ export default function AuthPage() {
   const signupFields = {
     header: 'Join EcoSentinel',
     subHeader: 'Create your account to start monitoring',
+    errorField: authError,
     fields: [
       {
         label: 'Name',
@@ -112,19 +139,6 @@ export default function AuthPage() {
         placeholder: 'Create a password (min 6 chars)',
         onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
           handleInputChange(event, 'password'),
-      },
-      {
-        label: 'Account Role',
-        required: true,
-        type: 'select' as const,
-        placeholder: 'Select Dashboard Role',
-        options: [
-          { value: 'Resident', label: 'Resident (Public Dashboard)' },
-          { value: 'Sarpanch', label: 'Sarpanch (Village Admin)' },
-          { value: 'Inspector', label: 'Inspector (GSPCB Official)' }
-        ],
-        onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-          handleInputChange(event, 'role'),
       },
     ],
     submitButton: 'Create Account',
@@ -167,10 +181,10 @@ export default function AuthPage() {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none mix-blend-screen animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none mix-blend-screen animate-pulse delay-1000"></div>
 
-      <div className="absolute top-6 left-6 flex items-center gap-2">
-        <Activity className="w-8 h-8 text-emerald-500" />
-        <span className="text-xl font-bold tracking-tight text-white">EcoSentinel</span>
-      </div>
+      <button onClick={() => navigate('/')} className="absolute top-6 left-6 z-20 flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl transition-colors border border-white/10 text-white group">
+        <Home className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+        <span className="font-semibold text-sm">Home</span>
+      </button>
 
       <motion.div
         onMouseMove={handleMouseMove}
@@ -190,11 +204,25 @@ export default function AuthPage() {
           <div className="absolute top-0 left-[-100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-45deg] group-hover:left-[100%] transition-all duration-[1500ms] pointer-events-none"></div>
 
           {/* Context Note about the 3 Dashboards */}
-          <div className="mb-6 text-center text-xs text-gray-400 bg-zinc-900/50 p-3 rounded-lg border border-white/5">
-            <span className="text-emerald-400 font-semibold mb-1 block">3 Distinct Ecosystem Dashboards</span>
-            <strong>Public:</strong> Monitor healthy environment metrics.<br/>
-            <strong>Sarpanch:</strong> Manage village-level alerts.<br/>
-            <strong>Inspector:</strong> Generate GSPCB compliances & broadcast.
+          <div className="mb-6">
+            <div className="text-center text-xs text-emerald-400 font-bold uppercase tracking-widest mb-3">3 Specialized Dashboards</div>
+            <div className="grid grid-cols-3 gap-2">
+              <button onClick={() => setSelectedRole('Resident')} type="button" className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${selectedRole === 'Resident' ? 'bg-emerald-500/20 border-emerald-500 scale-105 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-500/5 border-emerald-500/20 hover:bg-emerald-500/10'} text-center`}>
+                <Eye className="w-4 h-4 text-emerald-400" />
+                <span className="text-[10px] font-bold text-emerald-300">Public</span>
+                <span className="text-[9px] text-slate-500 leading-tight">Live AQI by region</span>
+              </button>
+              <button onClick={() => setSelectedRole('Sarpanch')} type="button" className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${selectedRole === 'Sarpanch' ? 'bg-amber-500/20 border-amber-500 scale-105 shadow-[0_0_15px_rgba(245,158,11,0.3)]' : 'bg-amber-500/5 border-amber-500/20 hover:bg-amber-500/10'} text-center`}>
+                <Users className="w-4 h-4 text-amber-400" />
+                <span className="text-[10px] font-bold text-amber-300">Sarpanch</span>
+                <span className="text-[9px] text-slate-500 leading-tight">Village admin tools</span>
+              </button>
+              <button onClick={() => setSelectedRole('Inspector')} type="button" className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${selectedRole === 'Inspector' ? 'bg-blue-500/20 border-blue-500 scale-105 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10'} text-center`}>
+                <Shield className="w-4 h-4 text-blue-400" />
+                <span className="text-[10px] font-bold text-blue-300">Inspector</span>
+                <span className="text-[9px] text-slate-500 leading-tight">GSPCB command center</span>
+              </button>
+            </div>
           </div>
 
           <AuthTabs
