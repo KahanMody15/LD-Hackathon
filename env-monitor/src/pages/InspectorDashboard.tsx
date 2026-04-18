@@ -392,6 +392,7 @@ export default function InspectorDashboard() {
               )}
             </div>
           </div>
+          </div>
         )}
 
         {activeTab === "reports" && (
