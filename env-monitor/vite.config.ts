@@ -10,4 +10,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      '/twilio-api': {
+        target: 'https://api.twilio.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/twilio-api/, ''),
+      },
+    },
+  },
 });
