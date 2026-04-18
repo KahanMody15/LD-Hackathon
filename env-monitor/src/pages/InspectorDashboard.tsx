@@ -207,7 +207,7 @@ export default function InspectorDashboard() {
             <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5">
               <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4">Factory Compliance Status</h3>
               <div className="space-y-3">
-                {FACTORIES_EXTENDED.map(f => {
+                {FACTORIES_EXTENDED.map((f: any) => {
                   const { badge, icon: Icon } = ComplianceColor(f.compliance);
                   return (
                     <button
@@ -293,7 +293,7 @@ export default function InspectorDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Factory List */}
             <div className="lg:col-span-1 space-y-3">
-              {FACTORIES_EXTENDED.map(f => {
+              {FACTORIES_EXTENDED.map((f: any) => {
                 const { badge, icon: Icon } = ComplianceColor(f.compliance);
                 return (
                   <button
@@ -459,7 +459,7 @@ export default function InspectorDashboard() {
                 </div>
               ))}
             </div>
-            {FACTORIES_EXTENDED.filter(f => f.compliance !== 'Good').map(f => {
+            {FACTORIES_EXTENDED.filter((f: any) => f.compliance !== 'Good').map((f: any) => {
               const { badge, icon: Icon, color } = ComplianceColor(f.compliance);
               return (
                 <div key={f.id} className="bg-slate-900/50 border border-white/5 rounded-2xl p-5">

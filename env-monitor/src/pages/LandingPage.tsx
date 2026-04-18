@@ -5,6 +5,7 @@ import { RippleBackground } from "@/components/landing/RippleBackground";
 import { BoxReveal } from "@/components/landing/BoxReveal";
 import { MapPanel } from "@/components/dashboard/MapPanel";
 import { useRealTimeData } from "@/hooks/useRealTimeData";
+import { AqiPredictorModal } from "@/components/landing/AqiPredictorModal";
 import { MoveRight, Activity, Zap, Palette, Puzzle, Book, Package, Brain, Phone, Mail, MapPin } from "lucide-react";
 
 // Regional dynamic data simulation parameters
@@ -19,6 +20,7 @@ export default function LandingPage() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const [selectedRegion, setSelectedRegion] = useState("");
+  const [showPredictor, setShowPredictor] = useState(false);
   const { sensors, factories, activeEvents } = useRealTimeData();
 
   useEffect(() => {
@@ -100,10 +102,23 @@ export default function LandingPage() {
               >
                 Get Started
               </button>
+
+              <button
+                onClick={() => setShowPredictor(true)}
+                className="px-8 py-4 bg-slate-900 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800 text-emerald-400 font-bold rounded-xl transition-all flex items-center gap-2"
+              >
+                <Brain className="w-5 h-5 text-emerald-400" />
+                Predict AQI (ML)
+              </button>
             </div>
           </BoxReveal>
         </div>
       </main>
+
+      {/* Render the ML Predictor Modal */}
+      {showPredictor && (
+        <AqiPredictorModal onClose={() => setShowPredictor(false)} />
+      )}
 
       {/* Dynamic Public AQI Dashboard Section */}
       {selectedRegion && (
