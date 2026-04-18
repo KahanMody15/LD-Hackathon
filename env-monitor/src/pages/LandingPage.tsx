@@ -6,7 +6,8 @@ import { BoxReveal } from "@/components/landing/BoxReveal";
 import { MapPanel } from "@/components/dashboard/MapPanel";
 import { useRealTimeData } from "@/hooks/useRealTimeData";
 import { AqiPredictorModal } from "@/components/landing/AqiPredictorModal";
-import { MoveRight, Activity, Zap, Palette, Puzzle, Book, Package, Brain, Phone, Mail, MapPin } from "lucide-react";
+import { HelpGuideModal } from "@/components/landing/HelpGuideModal";
+import { MoveRight, Activity, Zap, Palette, Puzzle, Book, Package, Brain, Phone, Mail, MapPin, HelpCircle } from "lucide-react";
 
 // Regional dynamic data simulation parameters
 const regionDataMap: Record<string, { pm25: number, pm10: number, so2: number, alertCount: number, status: string, color: string }> = {
@@ -21,6 +22,7 @@ export default function LandingPage() {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const [selectedRegion, setSelectedRegion] = useState("");
   const [showPredictor, setShowPredictor] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const { sensors, factories, activeEvents } = useRealTimeData();
 
   useEffect(() => {
@@ -265,8 +267,24 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Need Help Button (Above Footer, Left Aligned) */}
+      <div className="relative z-10 bg-black px-6 md:px-12 pt-16 pb-2">
+        <button 
+          onClick={() => setShowHelp(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 text-blue-400 font-medium rounded-lg transition-colors text-sm"
+        >
+          <HelpCircle className="w-4 h-4" />
+          Need Help?
+        </button>
+      </div>
+
+      {/* Render the Help Guide Modal */}
+      {showHelp && (
+        <HelpGuideModal onClose={() => setShowHelp(false)} />
+      )}
+
       {/* Modern Responsive Footer */}
-      <footer className="relative z-10 bg-black pt-16 pb-8 border-t border-zinc-800">
+      <footer className="relative z-10 bg-black pt-8 pb-8 border-t border-zinc-800">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
             
