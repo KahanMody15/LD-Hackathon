@@ -1,77 +1,56 @@
-<<<<<<< HEAD
-# React + TypeScript + Vite
+# EcoSentinel 🌍
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**AI-Powered Distributed Environmental Intelligence & Emergency Response System**
 
-Currently, two official plugins are available:
+EcoSentinel is a comprehensive, multi-role platform designed to monitor air quality, manage environmental hazards, and coordinate emergency responses in real-time. Built specifically to bridge the gap between citizens, local administrators (Sarpanch), and regulatory authorities (Inspectors).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Key Features
 
-## React Compiler
+*   **Multi-Role Dashboards:**
+    *   **Public (Resident):** Real-time localized AQI, health advisories, and weather conditions.
+    *   **Sarpanch (Village Admin):** Community alerts, local resource management, and direct routing of complaints to authorities.
+    *   **Inspector (GSPCB Official):** Regional analytics, violation tracking, compliance enforcement, and emergency response management.
+*   **Multilingual AI Assistant:** Built-in offline-capable NLP handling English, Hindi, and Gujarati to guide users on safety, submit complaints, and query statuses natively. 
+*   **Emergency SMS Broadcasts:** Built-in Twilio integration for instant mass alerts during severe pollution spikes, gas leaks, or environmental disasters.
+*   **Dynamic Data Visualization:** Beautiful and responsive charts, telemetry tables, and glassmorphism UI leveraging Tailwind, Recharts, and Framer Motion.
+*   **Comprehensive Reports:** Instantly export analytical data, notices, and metrics securely via PDF and Excel.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 💻 Tech Stack
 
-## Expanding the ESLint configuration
+*   **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Framer Motion, Recharts, Lucide React
+*   **Backend:** Python, FastAPI, Uvicorn (Offline Engine & Communication Bridge)
+*   **Integrations:** Twilio (SMS), PapaParse & SheetJS (Data processing), jsPDF
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
+*   Node.js (v18 or above)
+*   Python 3.8+
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. Setup Backend (FastAPI)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Navigate to the `api` folder and start the server:
+
+```bash
+cd env-monitor/api
+pip install fastapi uvicorn twilio pydantic
+python main.py
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+*Note: For SMS capabilities, you need to set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_FROM` environment variables.*
+API Server hosts at `http://localhost:8000`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 2. Setup Frontend (React + Vite)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Open a new terminal and run:
+
+```bash
+cd env-monitor
+npm install
+npm run dev
 ```
-=======
-# LD-Hackathon
->>>>>>> b343d4b0f25783b09f7a2424f4a4b4f2c0b8fa20
+
+The application will be live at `http://localhost:5173`.
+
+## 🤝 Project Vision
+Developed to bring immediate relief and transparent environmental governance to communities. The system ensures robust data pipelines from deployed sensor nodes, translating raw metrics into actionable intelligence formatted uniquely for whoever needs it—from the local citizen to the chief inspector.
