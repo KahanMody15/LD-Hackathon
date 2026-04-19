@@ -129,6 +129,46 @@ async def chat_endpoint(req: ChatRequest):
     reply = generate_response(intent, req.role, req.language)
     return ChatResponse(reply=reply)
 
+import os
+from typing import List
+from twilio.rest import Client
+
+class BroadcastRequest(BaseModel):
+    numbers: List[str]
+    message: str
+
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
+TWILIO_FROM = os.environ.get('TWILIO_FROM', '')
+
+@app.post("/broadcast")
+async def broadcast_sms(req: BroadcastRequest):
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    successes = []
+    errors = []
+    
+    for number in req.numbers:
+        # basic cleanup for number
+        clean_num = number.strip()
+        if not clean_num: continue
+        if not clean_num.startswith('+'):
+            if clean_num.startswith('91') and len(clean_num) == 12:
+                clean_num = '+' + clean_num
+            elif len(clean_num) == 10:
+                clean_num = '+91' + clean_num
+                
+        try:
+            msg = client.messages.create(
+                body=req.message,
+                from_=TWILIO_FROM,
+                to=clean_num
+            )
+            successes.append({"number": clean_num, "sid": msg.sid})
+        except Exception as e:
+            errors.append({"number": clean_num, "error": str(e)})
+            
+    return {"success": successes, "errors": errors}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

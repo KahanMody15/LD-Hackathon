@@ -57,6 +57,15 @@ export const saveComplaint = (complaint: Complaint) => {
   localStorage.setItem('es_complaints', JSON.stringify(complaints));
 };
 
+export const updateComplaintStatus = (id: string, newStatus: 'Pending' | 'In Progress' | 'Resolved') => {
+  const complaints = getComplaints();
+  const idx = complaints.findIndex(c => c.id === id);
+  if (idx > -1) {
+    complaints[idx].status = newStatus;
+    localStorage.setItem('es_complaints', JSON.stringify(complaints));
+  }
+};
+
 export const getSarpanchStats = () => {
   const stats = localStorage.getItem('es_sarpanch_stats');
   if (stats) return JSON.parse(stats);

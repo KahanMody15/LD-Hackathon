@@ -1,17 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Users, Shield, Eye, ArrowRight, MapPin, Bell, RadioTower, ChevronDown } from "lucide-react";
-import { TopNav } from "@/components/dashboard/TopNav";
-import { AlertBanner } from "@/components/dashboard/AlertBanner";
-import { MapPanel } from "@/components/dashboard/MapPanel";
-import { MetricsPanel } from "@/components/dashboard/MetricsPanel";
-import { SensorHealthPanel } from "@/components/dashboard/SensorHealthPanel";
-import { ChatAssistant } from "@/components/dashboard/ChatAssistant";
-import { FormAModal } from "@/components/dashboard/FormAModal";
-import { BroadcastModal } from "@/components/dashboard/BroadcastModal";
+import { Activity, Bell, Eye, Users, Shield, ArrowRight } from "lucide-react";
 import { useRealTimeData } from "@/hooks/useRealTimeData";
 import { getCurrentSession, clearSession } from "@/lib/store";
-import type { Role, Event } from "@/types";
+import type { Role } from "@/types";
 
 const DASHBOARD_CARDS = [
   {
@@ -21,16 +13,12 @@ const DASHBOARD_CARDS = [
     subtitle: "Resident View",
     description: "Check real-time air quality for your region. Get AQI levels, health advisories, and nearby station data instantly after selecting your area.",
     icon: Eye,
-    color: "emerald",
     features: ["Live AQI by region", "PM2.5 / PM10 / SO₂ data", "AQI trend charts", "Health advisories"],
-    gradient: "from-emerald-900/40 to-teal-900/20",
-    border: "border-emerald-500/20",
-    glow: "shadow-[0_0_60px_rgba(16,185,129,0.08)]",
-    iconBg: "bg-emerald-500/20 border-emerald-500/40",
-    iconColor: "text-emerald-400",
-    tag: "Public",
-    tagColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
-    btnColor: "bg-emerald-500 hover:bg-emerald-400 text-black",
+    cardBg: "bg-[#0b1715]",
+    cardBorder: "border-[#154634]",
+    tag: "PUBLIC",
+    tagColor: "bg-[#103024] text-[#10b981]",
+    btnColor: "bg-[#10b981] hover:bg-[#059669] text-black",
   },
   {
     role: "Sarpanch" as Role,
@@ -39,16 +27,12 @@ const DASHBOARD_CARDS = [
     subtitle: "Village Admin View",
     description: "Manage village-level environmental complaints, monitor factory compliance nearby, track welfare schemes and broadcast emergency alerts to residents.",
     icon: Users,
-    color: "amber",
     features: ["Resident complaints", "Factory compliance", "Welfare schemes", "Village AQI overview"],
-    gradient: "from-amber-900/30 to-orange-900/20",
-    border: "border-amber-500/20",
-    glow: "shadow-[0_0_60px_rgba(245,158,11,0.06)]",
-    iconBg: "bg-amber-500/20 border-amber-500/40",
-    iconColor: "text-amber-400",
-    tag: "Village Admin",
-    tagColor: "bg-amber-500/10 text-amber-400 border-amber-500/30",
-    btnColor: "bg-amber-500 hover:bg-amber-400 text-black",
+    cardBg: "bg-[#1f1307]",
+    cardBorder: "border-[#69390a]",
+    tag: "VILLAGE ADMIN",
+    tagColor: "bg-[#382005] text-[#f59e0b]",
+    btnColor: "bg-[#f59e0b] hover:bg-[#d97706] text-black",
   },
   {
     role: "Inspector" as Role,
@@ -57,31 +41,29 @@ const DASHBOARD_CARDS = [
     subtitle: "GSPCB Official View",
     description: "Full command center for GSPCB inspectors. Audit factory emissions, generate Form-A notices, issue enforcement orders, and broadcast emergency alerts.",
     icon: Shield,
-    color: "blue",
     features: ["Factory emission audits", "Form-A generation", "Enforcement actions", "Emergency broadcast"],
-    gradient: "from-blue-900/30 to-indigo-900/20",
-    border: "border-blue-500/20",
-    glow: "shadow-[0_0_60px_rgba(96,165,250,0.06)]",
-    iconBg: "bg-blue-500/20 border-blue-500/40",
-    iconColor: "text-blue-400",
-    tag: "GSPCB Official",
-    tagColor: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    btnColor: "bg-blue-500 hover:bg-blue-400 text-foreground",
+    cardBg: "bg-[#0c142e]",
+    cardBorder: "border-[#1e3a8a]",
+    tag: "GSPCB OFFICIAL",
+    tagColor: "bg-[#172554] text-[#3b82f6]",
+    btnColor: "bg-[#3b82f6] hover:bg-[#2563eb] text-white",
   },
 ];
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [role, setRole] = useState<Role>("Resident");
-  const [showBroadcast, setShowBroadcast] = useState(false);
-  const [formModalEvent, setFormModalEvent] = useState<Event | null>(null);
-  const [showMap, setShowMap] = useState(false);
+  const { sensors, activeEvents } = useRealTimeData();
+  const session = getCurrentSession();
 
-  const { sensors, factories, activeEvents } = useRealTimeData();
+  useEffect(() => {
+    if (session) {
+      setRole(session.role);
+    }
+  }, [session]);
 
   const handleDashboardClick = (e: React.MouseEvent, card: typeof DASHBOARD_CARDS[0]) => {
     e.stopPropagation();
-    const session = getCurrentSession();
     if (!session || session.role !== card.role) {
       clearSession();
       navigate('/auth', { state: { requiredRole: card.role } });
@@ -90,138 +72,116 @@ export default function Dashboard() {
     }
   };
 
+  const handleLogout = () => {
+    clearSession();
+    navigate('/auth');
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col overflow-hidden relative">
-      {/* Ambient background glows */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[160px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[140px]" />
-        <div className="absolute top-1/2 left-1/2 w-[300px] h-[300px] bg-amber-600/4 rounded-full blur-[120px]" />
-      </div>
-
-      <TopNav
-        role={role}
-        setRole={(r) => {
-          setRole(r);
-          const card = DASHBOARD_CARDS.find(c => c.role === r);
-          if (card) handleDashboardClick(new MouseEvent('click') as any as React.MouseEvent, card);
-        }}
-        onBroadcastClick={() => setShowBroadcast(true)}
-      />
-
-      <AlertBanner events={activeEvents} />
-
-      <div className="flex-1 overflow-y-auto relative z-10">
-        {/* Hero */}
-        <div className="text-center pt-12 pb-8 px-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/60 border border-border-light text-xs text-secondary mb-6">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            {sensors.filter(s => s.status === 'Active').length} sensors live · {activeEvents.length} active events
+    <div className="min-h-screen bg-[#060B12] text-white flex flex-col font-sans overflow-x-hidden">
+      {/* Top Header */}
+      <header className="flex items-center justify-between px-6 py-4 bg-[#0A0F1A] border-b border-[#1A2234]">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#14223A] flex items-center justify-center border border-[#1E3050]">
+            <Activity className="w-6 h-6 text-[#3B82F6]" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-emerald-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent mb-4 leading-tight">
-            Choose Your Dashboard
-          </h1>
-          <p className="text-secondary text-lg max-w-2xl mx-auto">
-            EcoSentinel provides three specialized dashboards — each tailored to your role in the environmental monitoring ecosystem.
-          </p>
+          <span className="text-xl font-semibold tracking-tight text-white">EcoSentinel Console</span>
         </div>
 
-        {/* Dashboard Cards */}
-        <div className="max-w-6xl mx-auto px-6 pb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {DASHBOARD_CARDS.map((card) => (
-              <div
-                key={card.role}
-                className={`relative group rounded-2xl border ${card.border} bg-gradient-to-br ${card.gradient} p-6 flex flex-col gap-4 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 ${card.glow} cursor-pointer backdrop-blur-sm`}
+        <div className="flex items-center gap-4">
+          <select 
+            value={role} 
+            onChange={(e) => setRole(e.target.value as Role)}
+            className="bg-[#14223A] border border-[#1E3050] text-sm text-gray-300 rounded-lg px-3 py-1.5 focus:outline-none"
+          >
+            <option value="Resident">Resident</option>
+            <option value="Sarpanch">Sarpanch</option>
+            <option value="Inspector">Inspector</option>
+          </select>
+          
+          <button className="p-2 bg-[#14223A] hover:bg-[#1E3050] rounded-full transition-colors relative">
+            <Bell className="w-5 h-5 text-gray-400" />
+            {activeEvents.length > 0 && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#14223A]" />
+            )}
+          </button>
+          
+          <button 
+            onClick={handleLogout}
+            className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-black font-bold uppercase text-lg border-2 border-[#1E3050] hover:scale-105 transition-transform"
+          >
+            {session ? session.name.charAt(0) : "R"}
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col items-center justify-center py-16 px-6 relative z-10">
+        
+        {/* Glow ambient */}
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-cyan-900/10 blur-[150px] pointer-events-none rounded-full" />
+
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#14223A]/80 border border-[#1E3050] text-[11px] text-emerald-400 mb-8 backdrop-blur-sm shadow-lg">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          {sensors.filter(s => s.status === 'Active').length} sensors live · {activeEvents.length} active events
+        </div>
+        
+        <h1 className="text-4xl md:text-5xl font-bold text-teal-300 mb-4 tracking-tight drop-shadow-md">
+          Choose Your Dashboard
+        </h1>
+        <p className="text-gray-400 text-sm max-w-xl text-center mb-16 leading-relaxed">
+          EcoSentinel provides three specialized dashboards — each tailored to your
+          role in the environmental monitoring ecosystem.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full">
+          {DASHBOARD_CARDS.map((card) => (
+            <div
+              key={card.role}
+              className={`relative rounded-2xl border ${card.cardBg} ${card.cardBorder} p-6 flex flex-col gap-4 transition-all duration-300 hover:scale-[1.02] cursor-pointer shadow-xl`}
+              onClick={(e) => handleDashboardClick(e, card)}
+            >
+              <div className="flex items-center justify-between">
+                <span className={`text-[9px] font-bold px-2 py-1.5 rounded-md uppercase tracking-wider ${card.tagColor}`}>
+                  {card.tag}
+                </span>
+                <div className={`w-1.5 h-1.5 rounded-full bg-current opacity-80 ${card.tagColor.split(' ')[1]}`} />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <card.icon className={`w-8 h-8 ${card.tagColor.split(' ')[1]}`} strokeWidth={1.5} />
+                <div>
+                  <h2 className="text-lg font-bold text-white tracking-tight">{card.title}</h2>
+                  <p className={`text-[11px] ${card.tagColor.split(' ')[1]}`}>{card.subtitle}</p>
+                </div>
+              </div>
+
+              <p className="text-[13px] text-gray-400 leading-relaxed min-h-[60px]">
+                {card.description}
+              </p>
+
+              <div className="space-y-3 flex-1 mt-2">
+                {card.features.map((f) => (
+                  <div key={f} className="flex items-center gap-2 text-[12px] text-gray-400">
+                    <span className="text-gray-600 font-bold">•</span>
+                    {f}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-[13px] transition-all hover:gap-3 mt-4 ${card.btnColor}`}
                 onClick={(e) => handleDashboardClick(e, card)}
               >
-                {/* Tag */}
-                <div className="flex items-center justify-between">
-                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider ${card.tagColor}`}>
-                    {card.tag}
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 opacity-60 animate-pulse" />
-                </div>
-
-                {/* Icon + Title */}
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-xl ${card.iconBg} border flex items-center justify-center flex-shrink-0`}>
-                    <card.icon className={`w-6 h-6 ${card.iconColor}`} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-foreground leading-tight">{card.title}</h2>
-                    <p className={`text-xs font-medium ${card.iconColor} mt-0.5`}>{card.subtitle}</p>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-secondary text-sm leading-relaxed">{card.description}</p>
-
-                {/* Features */}
-                <div className="space-y-1.5 flex-1">
-                  {card.features.map((f) => (
-                    <div key={f} className="flex items-center gap-2 text-xs text-secondary">
-                      <div className={`w-1 h-1 rounded-full ${card.iconColor}`} />
-                      {f}
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all ${card.btnColor} group-hover:gap-3`}
-                  onClick={(e) => handleDashboardClick(e, card)}
-                >
-                  Enter Dashboard
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Toggle Map Preview */}
-          <div className="mt-10">
-            <button
-              onClick={() => setShowMap(!showMap)}
-              className="flex items-center gap-2 mx-auto text-sm text-secondary hover:text-foreground transition-colors border border-border-light px-4 py-2 rounded-lg hover:border-white/20"
-            >
-              <MapPin className="w-4 h-4" />
-              {showMap ? "Hide" : "Show"} Live Sensor Map
-              <ChevronDown className={`w-4 h-4 transition-transform ${showMap ? "rotate-180" : ""}`} />
-            </button>
-
-            {showMap && (
-              <div className="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-6 h-[500px]">
-                <div className="lg:col-span-3 glass-panel rounded-xl flex border-border-light relative">
-                  <MapPanel sensors={sensors} factories={factories} activeEvents={activeEvents} />
-                  {role !== 'Resident' && activeEvents.length > 0 && activeEvents[0].severity === 'Critical' && (
-                    <div className="absolute bottom-6 right-6">
-                      <button
-                        onClick={() => setFormModalEvent(activeEvents[0])}
-                        className="bg-red-500 text-foreground px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-red-600 animate-bounce text-sm"
-                      >
-                        Generate GSPCB Form-A
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="lg:col-span-1 flex flex-col gap-4 h-full overflow-y-auto custom-scrollbar">
-                  <MetricsPanel sensors={sensors} />
-                  <SensorHealthPanel sensors={sensors} />
-                </div>
-              </div>
-            )}
-          </div>
+                Enter Dashboard
+                <ArrowRight className="w-4 h-4 transition-transform" />
+              </button>
+            </div>
+          ))}
         </div>
-      </div>
-
-      <ChatAssistant />
-
-      {showBroadcast && (
-        <BroadcastModal onClose={() => setShowBroadcast(false)} onSend={() => setShowBroadcast(false)} />
-      )}
-      {formModalEvent && (
-        <FormAModal event={formModalEvent} onClose={() => setFormModalEvent(null)} />
-      )}
+      </main>
+      
+      {/* Absolute Chat Button replica for consistency if needed, though FloatingChatbot covers it globally */}
     </div>
   );
 }
