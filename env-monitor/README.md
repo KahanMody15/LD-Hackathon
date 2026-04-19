@@ -4,8 +4,11 @@
 
 EcoSentinel is a comprehensive, multi-role platform designed to monitor air quality, manage environmental hazards, and coordinate emergency responses in real-time. Built specifically to bridge the gap between citizens, local administrators (Sarpanch), and regulatory authorities (Inspectors).
 
+🌍 **Live Deployment:** [https://ld-hackathon.vercel.app](https://ld-hackathon.vercel.app)
+
 ## 🚀 Key Features
 
+*   **Predictive ML Modeling (Time Series Forecasting):** Implements an advanced time-series forecasting engine natively in the browser via an XGBoost deterministic surrogate logic. It instantly extracts 33 complex temporal and statistical features (including lag derivatives, rolling variations, and Exponential Weighted Moving Averages) to calculate highly-accurate predictive AQI trends without the overhead of an external Python runtime layer.
 *   **Multi-Role Dashboards:**
     *   **Public (Resident):** Real-time localized AQI, health advisories, and weather conditions.
     *   **Sarpanch (Village Admin):** Community alerts, local resource management, and direct routing of complaints to authorities.
