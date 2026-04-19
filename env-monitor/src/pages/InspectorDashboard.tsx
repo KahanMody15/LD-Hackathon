@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Shield, Bell, Radio, AlertTriangle, CheckCircle, XCircle, BarChart2, FileText, Anchor, Download, Filter, Plus, FileSignature } from "lucide-react";
+import { ArrowLeft, Shield, Bell, Radio, AlertTriangle, CheckCircle, XCircle, BarChart2, FileText, Anchor, Download, Plus, FileSignature } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { getCurrentSession, clearSession, getExtendedFactories, saveExtendedFactory, getInspectorStats, updateInspectorStats, getSarpanchStats } from "@/lib/store";
@@ -37,6 +37,14 @@ export default function InspectorDashboard() {
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [broadcastStatus, setBroadcastStatus] = useState<{type: 'success'|'error', msg: string} | null>(null);
+
+  const [reportsList, setReportsList] = useState([
+    { name: "Monthly Ambient Air Quality Report", desc: "Zone-wide · Apr 2025 · PDF", status: "Ready" },
+    { name: "Factory Violation Notice - Zentis Pharma", desc: "Zentis Pharmaceuticals · Apr 2025 · Form-A", status: "Pending Signature" },
+    { name: "Quarterly Compliance Summary", desc: "All Factories · Q1 2025 · PDF", status: "Ready" },
+    { name: "Public Health Advisory - Vapi Zone", desc: "Public · Mar 2025 · Advisory", status: "Published" },
+  ]);
+  const [isAddReportModalOpen, setIsAddReportModalOpen] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -120,7 +128,7 @@ export default function InspectorDashboard() {
     setBroadcastStatus(null);
     
     // Split by comma and clean up whitespace
-    const numbers = broadcastNumbers.split(',').map(n => n.strip ? n.strip() : n.trim()).filter(n => n);
+    const numbers = broadcastNumbers.split(',').map(n => n.trim()).filter(n => n);
     
     if (numbers.length === 0) {
       setBroadcastStatus({ type: 'error', msg: 'Please provide at least one valid phone number.' });
@@ -151,6 +159,18 @@ export default function InspectorDashboard() {
       setBroadcastStatus({ type: 'error', msg: 'Failed to connect to the broadcasting server.' });
     }
     setIsSending(false);
+  };
+
+  const handleAddReport = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newReport = {
+      name: formData.get('name') as string,
+      desc: formData.get('desc') as string,
+      status: formData.get('status') as string,
+    };
+    setReportsList(prev => [newReport, ...prev]);
+    setIsAddReportModalOpen(false);
   };
 
   const renderTabContent = () => {
@@ -298,9 +318,12 @@ export default function InspectorDashboard() {
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-white">Reports & Compliance Forms</h3>
               <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 border border-[#1A2234] bg-[#0D1322] text-gray-300 hover:text-white rounded-lg text-sm font-semibold transition-colors">
-                  <Filter className="w-4 h-4" />
-                  Filter
+                <button 
+                  onClick={() => setIsAddReportModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 border border-[#1A2234] bg-[#14223A] text-blue-400 hover:bg-[#1E3050] rounded-lg text-sm font-semibold transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Report
                 </button>
                 <button 
                   onClick={() => handleDownloadPDF("Batch Export")}
@@ -313,12 +336,7 @@ export default function InspectorDashboard() {
             </div>
 
             <div className="space-y-4">
-              {[
-                { name: "Monthly Ambient Air Quality Report", desc: "Zone-wide · Apr 2025 · PDF", status: "Ready" },
-                { name: "Factory Violation Notice - Zentis Pharma", desc: "Zentis Pharmaceuticals · Apr 2025 · Form-A", status: "Pending Signature" },
-                { name: "Quarterly Compliance Summary", desc: "All Factories · Q1 2025 · PDF", status: "Ready" },
-                { name: "Public Health Advisory - Vapi Zone", desc: "Public · Mar 2025 · Advisory", status: "Published" },
-              ].map((report, i) => {
+              {reportsList.map((report, i) => {
                 let statusColor = "emerald";
                 if(report.status === "Pending Signature") statusColor = "amber";
                 
@@ -678,6 +696,37 @@ export default function InspectorDashboard() {
                <div className="flex gap-3 pt-4 border-t border-[#1A2234]">
                   <button type="button" onClick={() => setIsActionModalOpen(null)} className="flex-1 py-2 rounded-lg font-bold text-gray-400 bg-[#141C2C] hover:bg-[#1E293B] transition-colors">Cancel</button>
                   <button type="submit" className="flex-1 py-2 rounded-lg font-bold text-white bg-blue-500 hover:bg-blue-600 transition-colors">Confirm Action</button>
+               </div>
+             </form>
+           </div>
+        </div>
+      )}
+
+      {isAddReportModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4">
+           <div className="bg-[#0A0F1A] border border-[#1A2234] rounded-2xl w-full max-w-md p-6 shadow-2xl">
+             <h3 className="text-xl font-bold text-white mb-2">Add New Report</h3>
+             <p className="text-sm text-gray-400 mb-6">Upload or generate a new compliance report.</p>
+            <form onSubmit={handleAddReport} className="space-y-4">
+               <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Report Name</label>
+                  <input required name="name" className="w-full bg-[#141C2C] border border-[#1E293B] rounded-lg px-4 py-2 text-white outline-none focus:border-blue-500" placeholder="e.g. Weekly Emissions Log" />
+               </div>
+               <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Description / Metadata</label>
+                  <input required name="desc" className="w-full bg-[#141C2C] border border-[#1E293B] rounded-lg px-4 py-2 text-white outline-none focus:border-blue-500" placeholder="e.g. Zone-wide · PDF" />
+               </div>
+               <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Status</label>
+                  <select required name="status" className="w-full bg-[#141C2C] border border-[#1E293B] rounded-lg px-4 py-2 text-white outline-none focus:border-blue-500">
+                    <option value="Ready">Ready</option>
+                    <option value="Pending Signature">Pending Signature</option>
+                    <option value="Published">Published</option>
+                  </select>
+               </div>
+               <div className="flex gap-3 pt-4 border-t border-[#1A2234]">
+                  <button type="button" onClick={() => setIsAddReportModalOpen(false)} className="flex-1 py-2 rounded-lg font-bold text-gray-400 bg-[#141C2C] hover:bg-[#1E293B] transition-colors">Cancel</button>
+                  <button type="submit" className="flex-1 py-2 rounded-lg font-bold text-white bg-blue-500 hover:bg-blue-600 transition-colors">Add Report</button>
                </div>
              </form>
            </div>

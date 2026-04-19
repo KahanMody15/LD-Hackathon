@@ -6,13 +6,13 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "rec
 import { HeaderActions } from "@/components/dashboard/HeaderActions";
 import { saveComplaint, getCurrentSession } from "@/lib/store";
 
+import { MapView } from "@/components/dashboard/MapView";
+
 const REGIONS = [
-  { id: "vapi", name: "Vapi GIDC", lat: 20.3893, lng: 72.9106, defaultAQI: 142 },
-  { id: "ankleshwar", name: "Ankleshwar", lat: 21.6264, lng: 73.0033, defaultAQI: 168 },
-  { id: "surat", name: "Surat Industrial", lat: 21.1702, lng: 72.8311, defaultAQI: 95 },
-  { id: "bharuch", name: "Bharuch", lat: 21.7051, lng: 72.9959, defaultAQI: 120 },
-  { id: "vadodara", name: "Vadodara", lat: 22.3072, lng: 73.1812, defaultAQI: 88 },
-  { id: "gandhinagar", name: "Gandhinagar", lat: 23.2156, lng: 72.6369, defaultAQI: 62 },
+  { id: "ahmedabad", name: "Ahmedabad", lat: 23.0225, lng: 72.5714, defaultAQI: 168 },
+  { id: "surat", name: "Surat", lat: 21.1702, lng: 72.8311, defaultAQI: 95 },
+  { id: "vadodara", name: "Vadodara", lat: 22.3072, lng: 73.1812, defaultAQI: 142 },
+  { id: "rajkot", name: "Rajkot", lat: 22.3039, lng: 70.8022, defaultAQI: 120 },
 ];
 
 function getAQILevel(aqi: number) {
@@ -80,7 +80,7 @@ export default function PublicDashboard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportIssueData, setReportIssueData] = useState({ issue: '', severity: 'Medium' as any });
-  const { sensors } = useRealTimeData();
+  const { sensors, factories } = useRealTimeData();
   const session = getCurrentSession();
 
   const handleReportIssue = (e: React.FormEvent) => {
@@ -326,26 +326,19 @@ export default function PublicDashboard() {
               </div>
             </div>
 
-            {/* Nearby Stations */}
-            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4">
-                Nearby CAAQMS Stations ({sensors.filter(s => s.status === 'Active').length} Active)
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {sensors.slice(0, 6).map((s) => {
-                  const sl = getAQILevel(s.aqi);
-                  return (
-                    <div key={s.id} className={`rounded-xl p-3 border ${sl.border} ${sl.bg}`}>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-slate-300">{s.name}</span>
-                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${sl.bg} ${sl.text}`}>
-                          {s.status === 'Active' ? `AQI ${s.aqi.toFixed(0)}` : s.status}
-                        </span>
-                      </div>
-                      <div className={`text-[10px] mt-1 ${sl.text}`}>{s.status === 'Active' ? sl.label : 'Station Offline'}</div>
-                    </div>
-                  );
-                })}
+            {/* Live Interactive MapView */}
+            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6 shadow-2xl relative z-10 w-full">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
+                  Live CAAQMS Real-World Map
+                </h3>
+                <div className="flex items-center gap-4 text-xs font-semibold text-slate-400">
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500"></div> Sensors</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm bg-purple-500"></div> Factories</div>
+                </div>
+              </div>
+              <div className="h-[500px]">
+                <MapView region={selectedRegion} sensors={sensors} factories={factories} />
               </div>
             </div>
           </div>
