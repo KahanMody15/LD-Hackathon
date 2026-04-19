@@ -56,7 +56,8 @@ export function FloatingChatbot() {
       // Fake delay for natural feel
       await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 500));
 
-      const res = await fetch('http://localhost:8000/chat', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${apiUrl}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

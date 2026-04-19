@@ -137,7 +137,8 @@ export default function InspectorDashboard() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/broadcast", {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${apiUrl}/broadcast`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ numbers, message: broadcastMessage })
