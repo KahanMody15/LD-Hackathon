@@ -58,7 +58,7 @@ export default function LandingPage() {
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-32 pb-24 text-center">
         <div className="max-w-4xl mx-auto flex flex-col items-center hero-content cosmos-content gap-6">
           <BoxReveal boxColor="#10b981" duration={0.6}>
-            <h1 ref={titleRef} className="hero-title text-5xl md:text-7xl font-bold text-white tracking-tight">
+            <h1 ref={titleRef} className="hero-title text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 tracking-tight drop-shadow-2xl animate-float">
               Hyperlocal Pollution Evidence Engine
             </h1>
           </BoxReveal>
@@ -77,10 +77,10 @@ export default function LandingPage() {
           <BoxReveal boxColor="#3b82f6" duration={1.0}>
             <div className="flex flex-col sm:flex-row shadow-2xl items-center gap-4 mt-8">
               {/* Region Dropdown */}
-              <div className="relative">
+              <div className="relative transform hover:scale-105 transition-all duration-300">
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500 pointer-events-none" />
                 <select
-                  className="pl-12 pr-6 py-4 rounded-xl bg-zinc-900/80 text-white border border-zinc-700/50 hover:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-lg font-medium appearance-none min-w-[200px] cursor-pointer transition-colors"
+                  className="pl-12 pr-6 py-4 rounded-xl bg-zinc-900/80 text-white border border-zinc-700/50 hover:border-emerald-500/80 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] font-medium appearance-none min-w-[200px] cursor-pointer transition-all duration-300 backdrop-blur-md"
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
                 >
@@ -100,16 +100,16 @@ export default function LandingPage() {
                   const el = document.getElementById("sign-in-section");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] shadow-emerald-500/20"
+                className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-black font-bold rounded-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-[0_10px_40px_rgba(16,185,129,0.3)] hover:shadow-[0_15px_50px_rgba(16,185,129,0.5)] border border-emerald-300/50 backdrop-blur-sm"
               >
                 Get Started
               </button>
 
               <button
                 onClick={() => setShowPredictor(true)}
-                className="px-8 py-4 bg-slate-900 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800 text-emerald-400 font-bold rounded-xl transition-all flex items-center gap-2"
+                className="px-8 py-4 bg-slate-900/80 border border-emerald-500/30 hover:border-emerald-400 hover:bg-slate-800 text-emerald-400 font-bold rounded-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center gap-2 shadow-lg backdrop-blur-sm hover:shadow-[0_0_25px_rgba(16,185,129,0.2)]"
               >
-                <Brain className="w-5 h-5 text-emerald-400" />
+                <Brain className="w-5 h-5 text-emerald-400 animate-pulse" />
                 Predict AQI (ML)
               </button>
             </div>
@@ -140,23 +140,24 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-zinc-900/60 p-6 rounded-2xl border border-white/5">
-                <p className="text-gray-400 text-sm mb-1">PM2.5</p>
-                <p className="text-3xl font-bold text-white">{currentRegionData.pm25}<span className="text-sm text-gray-500 font-normal ml-1">µg/m³</span></p>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 perspective-[1000px]">
+              <div className="bg-zinc-900/60 p-6 rounded-2xl border border-white/10 hover:border-emerald-500/50 transition-all duration-500 hover:scale-105 hover:-rotate-y-12 shadow-xl backdrop-blur-md group">
+                <p className="text-gray-400 text-sm mb-1 group-hover:text-emerald-300 transition-colors">PM2.5</p>
+                <p className="text-3xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-400 group-hover:to-cyan-300 transition-all">{currentRegionData.pm25}<span className="text-sm text-gray-500 font-normal ml-1">µg/m³</span></p>
               </div>
-              <div className="bg-zinc-900/60 p-6 rounded-2xl border border-white/5">
-                <p className="text-gray-400 text-sm mb-1">PM10</p>
-                <p className="text-3xl font-bold text-white">{currentRegionData.pm10}<span className="text-sm text-gray-500 font-normal ml-1">µg/m³</span></p>
+              <div className="bg-zinc-900/60 p-6 rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all duration-500 hover:scale-105 shadow-xl backdrop-blur-md group overflow-hidden relative">
+                <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <p className="text-gray-400 text-sm mb-1 relative z-10">PM10</p>
+                <p className="text-3xl font-bold text-white relative z-10 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-indigo-300">{currentRegionData.pm10}<span className="text-sm text-gray-500 font-normal ml-1">µg/m³</span></p>
               </div>
-              <div className="bg-zinc-900/60 p-6 rounded-2xl border border-white/5">
-                <p className="text-gray-400 text-sm mb-1">SO2</p>
-                <p className="text-3xl font-bold text-white">{currentRegionData.so2}<span className="text-sm text-gray-500 font-normal ml-1">ppb</span></p>
+              <div className="bg-zinc-900/60 p-6 rounded-2xl border border-white/10 hover:border-purple-500/50 transition-all duration-500 hover:scale-105 hover:rotate-y-12 shadow-xl backdrop-blur-md group">
+                <p className="text-gray-400 text-sm mb-1 group-hover:text-purple-300 transition-colors">SO2</p>
+                <p className="text-3xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-300">{currentRegionData.so2}<span className="text-sm text-gray-500 font-normal ml-1">ppb</span></p>
               </div>
-              <div className={`bg-zinc-900/60 p-6 rounded-2xl border ${currentRegionData.alertCount > 0 ? 'border-warning/50' : 'border-white/5'}`}>
+              <div className={`bg-zinc-900/60 p-6 rounded-2xl border transition-all duration-500 hover:scale-105 shadow-xl backdrop-blur-md ${currentRegionData.alertCount > 0 ? 'border-warning/50 hover:shadow-[0_0_30px_rgba(243,156,18,0.3)]' : 'border-white/10 hover:border-emerald-500/50'}`}>
                 <p className={`${currentRegionData.alertCount > 0 ? 'text-warning' : 'text-gray-400'} text-sm mb-1 font-medium`}>Active Alerts</p>
                 <p className={`text-2xl font-bold ${currentRegionData.alertCount > 0 ? 'text-warning' : 'text-emerald-500'} flex items-center gap-2`}>
-                  <Zap className={`w-5 h-5 ${currentRegionData.alertCount > 0 ? 'fill-warning text-warning' : 'fill-emerald-500 text-emerald-500'}`} /> {currentRegionData.alertCount} Warning{currentRegionData.alertCount !== 1 ? 's' : ''}
+                  <Zap className={`w-5 h-5 ${currentRegionData.alertCount > 0 ? 'fill-warning text-warning animate-pulse' : 'fill-emerald-500 text-emerald-500'}`} /> {currentRegionData.alertCount} Warning{currentRegionData.alertCount !== 1 ? 's' : ''}
                 </p>
               </div>
             </div>
@@ -256,11 +257,12 @@ export default function LandingPage() {
             <h3 className="text-2xl font-bold text-white mb-6">Ready to manage your fleet?</h3>
             <Link
               to="/auth"
-              className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white bg-indigo-600 rounded-xl overflow-hidden shadow-2xl transition-transform hover:scale-105 active:scale-95"
+              className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white bg-indigo-600 rounded-xl overflow-hidden shadow-[0_10px_30px_rgba(79,70,229,0.4)] transition-all duration-300 hover:scale-110 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(79,70,229,0.6)] active:scale-95"
             >
               <div className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></div>
-              <span className="relative flex items-center gap-2">
-                Sign In to Dashboard <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] bg-[position:0_0,0_0] bg-no-repeat transition-all duration-700 [background-position:-100%_0,0_0] group-hover:[background-position:200%_0,0_0]"></div>
+              <span className="relative flex items-center gap-2 z-10">
+                Sign In to Dashboard <MoveRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
               </span>
             </Link>
           </div>

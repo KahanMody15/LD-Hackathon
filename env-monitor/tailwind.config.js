@@ -61,8 +61,19 @@ export default {
         'ripple': 'ripple 2s ease calc(var(--i, 0) * 0.2s) infinite',
         'orbit': 'orbit calc(var(--duration) * 1s) linear infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out 3s infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
       },
       keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        glow: {
+          'from': { boxShadow: '0 0 10px #10b981, 0 0 20px #10b981' },
+          'to': { boxShadow: '0 0 20px #10b981, 0 0 30px #10b981' },
+        },
         ripple: {
           "0%, 100%": { transform: "translate(-50%, -50%) scale(1)" },
           "50%": { transform: "translate(-50%, -50%) scale(0.9)" },
