@@ -137,9 +137,21 @@ class BroadcastRequest(BaseModel):
     numbers: List[str]
     message: str
 
-TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
-TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
-TWILIO_FROM = os.environ.get('TWILIO_FROM', '')
+# Manually load .env variables if present
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+if os.path.exists(env_path):
+    with open(env_path) as f:
+        for line in f:
+            if line.strip() and not line.startswith('#'):
+                parts = line.strip().split('=', 1)
+                if len(parts) == 2:
+                    key, val = parts
+                    os.environ[key.strip()] = val.strip().strip("'").strip('"')
+
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID') or os.environ.get('VITE_TWILIO_SID', '')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN') or os.environ.get('VITE_TWILIO_AUTH_TOKEN', '')
+TWILIO_FROM = os.environ.get('TWILIO_FROM') or os.environ.get('VITE_TWILIO_PHONE_NUMBER', '')
+
 
 @app.post("/broadcast")
 async def broadcast_sms(req: BroadcastRequest):

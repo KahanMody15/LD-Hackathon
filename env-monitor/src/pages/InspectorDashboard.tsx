@@ -137,7 +137,8 @@ export default function InspectorDashboard() {
       const data = await res.json();
       
       if (data.errors && data.errors.length > 0) {
-         setBroadcastStatus({ type: 'error', msg: `Failed to send to some numbers: ${data.errors.map((e:any)=>e.number).join(', ')}`});
+         const errorDetails = data.errors.map((e:any) => `${e.number} (${e.error})`).join(', ');
+         setBroadcastStatus({ type: 'error', msg: `Failed to send. Reason: ${errorDetails}`});
       } else {
          setBroadcastStatus({ type: 'success', msg: `Successfully broadcasted to ${data.success.length} numbers!` });
          setTimeout(() => {
